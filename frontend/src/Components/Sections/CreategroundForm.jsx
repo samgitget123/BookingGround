@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useBaseUrl } from "../../Contexts/BaseUrlContext";
 import { indianCities } from "../Data/CityData";
+import Swal from "sweetalert2";
 const CreateGroundForm = () => {
   const { baseUrl } = useBaseUrl();
   const [formData, setFormData] = useState({
@@ -45,17 +46,15 @@ const CreateGroundForm = () => {
             });
             setLocationLoaded(true);
           } catch (error) {
-            console.error("Error fetching location data:", error);
-            alert("Unable to fetch location. Please check your network.");
+            Swal.fire("Error", "Unable to fetch location. Please check your network.", "error");
           }
         },
         (error) => {
-          console.error("Geolocation error:", error);
-          alert("Unable to retrieve your location.");
+          Swal.fire("Error", "Unable to retrieve your location.", "error");
         }
       );
     } else {
-      alert("Geolocation is not supported by your browser.");
+      Swal.fire("Error", "Geolocation is not supported by your browser.", "error");
     }
   };
 
@@ -108,8 +107,7 @@ const CreateGroundForm = () => {
             },
           }
         );
-        console.log("Form submitted successfully", response.data);
-        alert("Ground added successfully!");
+        Swal.fire("Success", "Ground added successfully!", "success");
 
         // Reset form fields after successful submission
         setFormData({
@@ -124,8 +122,7 @@ const CreateGroundForm = () => {
         });
         setErrors({}); // Clear errors
       } catch (error) {
-        console.error("Error submitting the form:", error.message);
-        alert("Failed to add ground. Please check the network connection.");
+        Swal.fire("Error", "Failed to add ground. Please check your network connection.", "error");
       } finally {
         setIsLoading(false); // Always reset loading state
       }

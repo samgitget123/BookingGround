@@ -89,7 +89,18 @@ body {
   justify-content: center;
 }
 /*************************************/
+/************Modal backgrounds******/
+.custom-backdrop {
+  background-color: rgba(0, 0, 0, 0.7) !important; /* Adjust darkness */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1050; /* Ensure it appears behind the modal */
+}
 
+/*************************************/
 /* Main content should expand to fill the remaining space */
 .app-main {
   flex: 1;

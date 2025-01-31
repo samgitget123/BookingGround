@@ -24,7 +24,11 @@ const ViewGround = () => {
   const [grounddetails, setGrounddetails] = useState([]);
   const groundState = useSelector((state) => state.ground || {});
   // const bookingDetails = useSelector((state) => state.ground.bookingStatus);
-
+  useEffect(() => {
+    if (gid) {
+      dispatch(fetchGroundDetails({ gid, date: selectedDate }));
+    }
+  }, [gid, selectedDate]);
   const { baseUrl } = useBaseUrl();
   // console.log(grounddetails,'grounddetails')
   const dispatch = useDispatch();
@@ -37,11 +41,7 @@ const ViewGround = () => {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
-  useEffect(() => {
-    if (gid) {
-      dispatch(fetchGroundDetails({ gid, date: selectedDate }));
-    }
-  }, [gid, selectedDate]);
+  
   const navigate = useNavigate();
   const groundslots = [
     { id: "1", slot: "6.0" },
@@ -205,7 +205,7 @@ const ViewGround = () => {
       setSelectedSlots([...selectedSlots, slot]);
     }
   };
-
+console.log(availableSlots, bookedslotsbydate , 'allslots')
   const confirnnowClick = () => {
     setShowModal(true);
   };
@@ -377,14 +377,18 @@ const ViewGround = () => {
         handleCloseModal={handleCloseModal}
         selectedSlots={selectedSlots}
         selectdate={formatDate(selectedDate)}
+        setSelectedSlots={setSelectedSlots}
+        
       />
 
+                    {/****************Book details************* */}
       <BookDetailsModal
         showModal={showBookingModal}
         handleCloseModal={handleClosebookingModal}
         selectedSlot={clickedslot} // Pass selected slot to modal
         selectdate={formatDate(selectedDate)}
         ground_id={gid}
+       
       />
 
     </section>

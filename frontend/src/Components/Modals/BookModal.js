@@ -1,25 +1,39 @@
 import React, { useEffect, useState } from "react";
-
+import Swal from "sweetalert2";
 import { useParams, useNavigate } from "react-router-dom";
 
 import { useBaseUrl } from "../../Contexts/BaseUrlContext";
-
+import { fetchGroundDetails } from "../../redux/features/groundSlice";
+import { useDispatch } from "react-redux";
 const BookModal = ({
   showModal,
   handleCloseModal,
   selectedSlots = [],
   selectdate,
+  setSelectedSlots,
 }) => {
   const { gid } = useParams();
-
+ const navigate = useNavigate();
   const [info, setInfo] = useState("");
   const [name, setName] = useState(""); // State for Name
   const [email, setEmail] = useState(""); // State for Email
   const [mobile, setMobile] = useState(""); // State for Mobile
  
   const { baseUrl } = useBaseUrl();
+  const dispatch = useDispatch();
 
   const handleBooking = async (gid, selectedSlots, selectdate) => {
+    const result = await Swal.fire({
+      title: "Confirm Booking",
+      text: "Are you sure you want to book these slots?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, confirm it!",
+    });
+  
+    if (!result.isConfirmed) return; // Stop if the user cancels
     const bookingData = {
       ground_id: gid,
       date: selectdate,
@@ -41,11 +55,23 @@ const BookModal = ({
       const data = await response.json();
       console.log(data, 'bookingdata');
       if (data) {
+        dispatch(fetchGroundDetails({ gid, date: selectdate }));
         setInfo(data.message);
         setName('');
         setEmail('');
         setMobile('');
-        
+        setSelectedSlots([]);
+       // setInfo('');
+      // navigate(`/viewground/${gid}`);
+       //handleCloseModal();
+       setInfo('')
+        // Show success alert
+      Swal.fire({
+        title: "Success!",
+        text: "Your booking has been confirmed.",
+        icon: "success",
+        confirmButtonColor: "#006849",
+      });
       }
     } catch (error) {
       console.error("Error booking slot:", error);
@@ -172,7 +198,7 @@ console.log(gid, selectedSlots, selectdate, 'bookingsinputs')
               <button
                 type="button"
                 className="btn btn-primary"
-                disabled={selectedSlots.length === 0 || !name || !email || !mobile}
+                //disabled={selectedSlots.length === 0 || !name || !email || !mobile}
                 onClick={() => handleBooking(gid, selectedSlots, selectdate)}
               >
                 Confirm Booking
