@@ -1,6 +1,34 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 // Define the updateprice async thunk
+// export const updateprice = createAsyncThunk(
+//   "updateprice/updatedata",
+//   async ({ booking_id, newAmount, combopack }) => {
+//     try {
+//       const response = await fetch("http://localhost:5000/api/booking/updateprice", {
+//         method: 'PUT',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//           booking_id,
+//           newAmount,
+//           combopack,
+//         }),
+//       });
+
+//       if (!response.ok) {
+//         throw new Error("Failed to update the price");
+//       }
+
+//       const data = await response.json();
+//       console.log(data, 'updateprice');
+//       return data; // Return the fetched data
+//     } catch (error) {
+//       throw new Error(error.message);
+//     }
+//   }
+// );
 export const updateprice = createAsyncThunk(
   "updateprice/updatedata",
   async ({ booking_id, newAmount, combopack }) => {
@@ -11,9 +39,9 @@ export const updateprice = createAsyncThunk(
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          booking_id,
-          newAmount,
-          combopack,
+          booking_id,  // ✅ Correct
+          newPrice: newAmount,  // 🔄 Fix newAmount -> newPrice
+          comboPack: combopack,  // 🔄 Fix combopack -> comboPack
         }),
       });
 
@@ -22,9 +50,10 @@ export const updateprice = createAsyncThunk(
       }
 
       const data = await response.json();
-      console.log(data, 'updateprice');
-      return data; // Return the fetched data
+      console.log("Updated Price Response:", data); // ✅ Debugging
+      return data;
     } catch (error) {
+      console.error("Error in updateprice:", error); // ✅ Debugging
       throw new Error(error.message);
     }
   }

@@ -5,6 +5,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useBaseUrl } from "../../Contexts/BaseUrlContext";
 import { fetchGroundDetails } from "../../redux/features/groundSlice";
 import { useDispatch } from "react-redux";
+import { FaUser, FaEnvelope, FaPhoneAlt, FaRegCalendarAlt, FaRegClock, FaRupeeSign, FaEdit, FaTrashAlt } from "react-icons/fa";
+
 const BookModal = ({
   showModal,
   handleCloseModal,
@@ -13,16 +15,16 @@ const BookModal = ({
   setSelectedSlots,
 }) => {
   const { gid } = useParams();
- const navigate = useNavigate();
   const [info, setInfo] = useState("");
   const [name, setName] = useState(""); // State for Name
   const [email, setEmail] = useState(""); // State for Email
   const [mobile, setMobile] = useState(""); // State for Mobile
- 
+  const [price, setPrice] = useState(selectedSlots.length * 400);
   const { baseUrl } = useBaseUrl();
   const dispatch = useDispatch();
 
   const handleBooking = async (gid, selectedSlots, selectdate) => {
+    alert(`Total price: ${price}`)
     const result = await Swal.fire({
       title: "Confirm Booking",
       text: "Are you sure you want to book these slots?",
@@ -32,7 +34,7 @@ const BookModal = ({
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, confirm it!",
     });
-  
+
     if (!result.isConfirmed) return; // Stop if the user cancels
     const bookingData = {
       ground_id: gid,
@@ -40,7 +42,8 @@ const BookModal = ({
       slots: selectedSlots,
       name: name,   // Include name
       email: email, // Include email
-      mobile: mobile // Include mobile number
+      mobile: mobile, // Include mobile number
+      price: price
     };
 
     try {
@@ -53,26 +56,31 @@ const BookModal = ({
       });
 
       const data = await response.json();
-      console.log(data, 'bookingdata');
-      if (data) {
-        dispatch(fetchGroundDetails({ gid, date: selectdate }));
-        setInfo(data.message);
-        setName('');
-        setEmail('');
-        setMobile('');
-        setSelectedSlots([]);
-       // setInfo('');
-      // navigate(`/viewground/${gid}`);
-       //handleCloseModal();
-       setInfo('')
-        // Show success alert
+       // ✅ Check if API request was successful
+    if (!response.ok) {
       Swal.fire({
-        title: "Success!",
-        text: "Your booking has been confirmed.",
-        icon: "success",
-        confirmButtonColor: "#006849",
+        title: "Booking Failed",
+        text: data.message || "An error occurred while booking. Please try again.",
+        icon: "error",
+        confirmButtonColor: "#d33",
       });
-      }
+      return;
+    }
+      
+    dispatch(fetchGroundDetails({ gid, date: selectdate }));
+    setInfo('');
+    setName('');
+    setEmail('');
+    setMobile('');
+    setSelectedSlots([]);
+    setPrice(selectedSlots.length * 400)
+    Swal.fire({
+      title: "Success!",
+      text: "Your booking has been confirmed.",
+      icon: "success",
+      confirmButtonColor: "#006849",
+    });
+      
     } catch (error) {
       console.error("Error booking slot:", error);
     }
@@ -117,7 +125,10 @@ const BookModal = ({
 
     return `${startTime} - ${endTime}`;
   };
-console.log(gid, selectedSlots, selectdate, 'bookingsinputs')
+  console.log(gid, selectedSlots, selectdate, 'bookingsinputs')
+  const handleAmountChange = (e) => {
+    setPrice(e.target.value);
+  };
   return (
     <>
       <div
@@ -127,11 +138,11 @@ console.log(gid, selectedSlots, selectdate, 'bookingsinputs')
         aria-hidden={!showModal}
         style={{ display: showModal ? "block" : "none" }}
       >
-        <div className="modal-dialog modal-dialog-centered modal-lg">
+        <div className="modal-dialog modal-dialog-centered modal-md">
           <div className="modal-content shadow-lg rounded-3">
             <div className="modal-header text-white" style={{ backgroundColor: "#006849" }}>
               <h5 className="modal-title" id="exampleModalLabel">
-                Booking Confirmation
+                Booking Your Slot
               </h5>
               <button
                 type="button"
@@ -141,20 +152,26 @@ console.log(gid, selectedSlots, selectdate, 'bookingsinputs')
               ></button>
             </div>
             <div className="modal-body text-center">
-              <h6 className="mb-3">Your Selected Slots</h6>
-              <div className="alert alert-info py-2">
-                {selectedSlots.length > 0 ? (
-                  <span>{formatslot(selectedSlots)}</span>
-                ) : (
-                  <span>No slots selected.</span>
-                )}
-              </div>
-              <div className="my-3">
-                <strong>Date:</strong> {selectdate}
+              <div className="d-flex justify-content-between  my-2">
+                <div>
+                  <p><FaRegCalendarAlt size={20} className="me-1 text-dark" />{selectdate}</p>
+                </div>
+                <div>
+                  <div>
+                    {selectedSlots.length > 0 ? (
+                      <span><FaRegClock size={20} className="me-1 text-dark" />{formatslot(selectedSlots)}</span>
+                    ) : (
+                      <span>No slots selected.</span>
+                    )}
+                  </div>
+                </div>
+
               </div>
 
+
               {/* Input Fields for Name, Email, and Mobile */}
-              <div className="my-3">
+              <div className="my-3 input-group">
+                <span className="input-group-text"><FaUser /></span>
                 <input
                   type="text"
                   className="form-control"
@@ -163,7 +180,8 @@ console.log(gid, selectedSlots, selectdate, 'bookingsinputs')
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
-              <div className="my-3">
+              <div className="my-3 input-group">
+                <span className="input-group-text"><FaEnvelope /></span>
                 <input
                   type="email"
                   className="form-control"
@@ -172,22 +190,47 @@ console.log(gid, selectedSlots, selectdate, 'bookingsinputs')
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              <div className="my-3">
+              <div className="my-3 input-group">
+                <span className="input-group-text"><FaPhoneAlt /></span>
                 <input
                   type="number"
                   className="form-control"
                   placeholder="Enter your Mobile Number"
                   value={mobile}
                   onChange={(e) => setMobile(e.target.value)}
+                  maxLength={10}
                 />
+              </div>
+              <div className="d-flex justify-content-start">
+                {/* <div>
+                  <p>Total Amount</p>
+                </div> */}
+                {/* <div>
+                        <p><FaRupeeSign/>{selectedSlots.length * 400}/-</p>
+                        <p style={{padding:"0px"}}>Edit Amount</p>
+                    </div> */}
+
+                <div className="input-group input-group-sm">
+                  <span className="input-group-text" id="inputGroup-sizing-sm"><strong>Total Amount</strong></span>
+                  <input type="number" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value={price} onChange={handleAmountChange} />
+                </div>
+                {/* <div>
+                  <button
+                    className="btn btn-primary btn-sm "
+                    onClick={() => setPrice(selectedSlots.length * 400)}
+                  >
+                   Edit
+                  </button>
+                </div> */}
+
               </div>
 
               {info && <div className="alert alert-success">{info}</div>}
-              <p className="text-muted">
+              <p className="text-muted mt-2">
                 Please review the details before confirming.
               </p>
             </div>
-            <div className="modal-footer justify-content-between">
+            <div className="modal-footer justify-content-between" style={{ backgroundColor: "#006849" }}>
               <button
                 type="button"
                 className="btn btn-secondary"
@@ -198,7 +241,7 @@ console.log(gid, selectedSlots, selectdate, 'bookingsinputs')
               <button
                 type="button"
                 className="btn btn-primary"
-                //disabled={selectedSlots.length === 0 || !name || !email || !mobile}
+                disabled={selectedSlots.length === 0 || !name || !email || !mobile}
                 onClick={() => handleBooking(gid, selectedSlots, selectdate)}
               >
                 Confirm Booking

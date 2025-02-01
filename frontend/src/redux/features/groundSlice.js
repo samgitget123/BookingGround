@@ -15,6 +15,7 @@ const initialState = {
 export const fetchGroundDetails = createAsyncThunk(
   "ground/fetchGroundDetails",
   async ({ gid, date }, thunkAPI) => {
+    
     try {
       const response = await axios.get(`${baseUrl}/api/ground/${gid}?date=${date}`);
       console.log(response.data, "reduxground");

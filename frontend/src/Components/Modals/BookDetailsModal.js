@@ -6,6 +6,7 @@ import { deletebooking } from '../../redux/features/cancelbookingSlice';
 import { fetchGroundDetails } from '../../redux/features/groundSlice';
 import { updateprice } from '../../redux/features/updatepriceSlice';
 import { useNavigate } from "react-router-dom";
+import { FaUser,  FaPhoneAlt,FaRegCalendarAlt, FaRegClock, FaRupeeSign  } from "react-icons/fa";
 const BookDetailsModal = ({ showModal, handleCloseModal, selectedSlot, selectdate, ground_id }) => {
   const [bookingDetails, setBookingDetails] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -33,7 +34,7 @@ const BookDetailsModal = ({ showModal, handleCloseModal, selectedSlot, selectdat
       getBookingDetails(ground_id, selectdate, selectedSlot);
     }
 
-  }, [showModal, ground_id, selectdate, selectedSlot]); // Dependencies: this effect will run on these values' changes
+  }, [showModal, ground_id, selectdate, selectedSlot,showEditModal]); // Dependencies: this effect will run on these values' changes
 
   if (!showModal) return null; // Don't render the modal if showModal is false
 
@@ -42,7 +43,56 @@ const BookDetailsModal = ({ showModal, handleCloseModal, selectedSlot, selectdat
   const handleEditAmount = () => {
     setNewAmount(bookingData?.book?.price || ""); // Set current amount in input
     setShowEditModal(true);
+    //alert(`new amount: ${newAmount}`)
   };
+  const updateHandler = async () => {
+    const bookingData = bookingDetails?.data?.[0];
+  
+    if (!newAmount || !bookingData?.book?.booking_id) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Please provide a valid amount to update.',
+      });
+      return;
+    }
+  
+    try {
+      // Dispatch the updateprice action with required payload
+      const response = await dispatch(updateprice({
+        booking_id: bookingData.book.booking_id,
+        newAmount: parseInt(newAmount, 10), // Ensure it's a number
+        comboPack: false, // Default value, modify if needed
+      }));
+      
+      // Handle response
+      if (response.payload?.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Amount Updated!',
+          text: 'The booking price has been successfully updated.',
+        });
+        
+        setShowEditModal(false); // Close the modal
+        //setShowEditModal(false)
+        //window.location.reload();
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: response.payload?.message || 'Failed to update the booking price.',
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.message || 'Failed to update the price.',
+      });
+    }
+    
+  };
+  
  
   console.log(newAmount, 'newAmount before sending API request');
   console.log('Updating amount to:', newAmount);
@@ -271,8 +321,8 @@ const cancelbookingHandler = async () => {
     <div className="modal fade show custom-backdrop" style={{ display: "block" }} tabIndex="-1" aria-labelledby="bookDetailsModalLabel" aria-hidden="true">
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="bookDetailsModalLabel">Booking Details</h5>
+          <div className="modal-header" style={{ backgroundColor: "#006849" }}>
+            <h5 className="modal-title text-light" id="bookDetailsModalLabel">Booking Details</h5>
             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseModal}></button>
           </div>
           <div className="modal-body">
@@ -285,26 +335,26 @@ const cancelbookingHandler = async () => {
                 </div>
                 <div className="d-flex justify-content-between my-1">
                   <div>
-                    <p><strong>Date: </strong> {selectdate}</p>
+                    <p><FaRegCalendarAlt size={20} className="me-1 text-secondary" />{selectdate}</p>
                   </div>
                   <div>
-                    <p>{convertSlotToTimeRange(bookingData.slots)}</p>
+                    <p> <FaRegClock size={20} className="me-1 text-secondary" />{convertSlotToTimeRange(bookingData.slots)}</p>
                   </div>
                 </div>
 
                 <div className='d-flex justify-content-between my-1'>
                   <div>
-                    <p>{bookingData.name}</p>
+                    <p><FaUser size={20} className="me-1 text-secondary" />{bookingData.name}</p>
                   </div>
                   <div>
-                    <p><strong>{bookingData.mobile}</strong></p>
+                    <p><a href={`tel:${bookingData.mobile}`} className="text-decoration-underline text-dark"><FaPhoneAlt size={20} className="me-1 text-secondary" />{bookingData.mobile}</a></p>
                   </div>
 
                 </div>
 
                 <div className='d-flex justify-content-between my-1'>
                     <div>
-                      <strong><p style={{paddingBottom:"1px"}}>Amount {bookingData.book.price}/-</p></strong>
+                    <p style={{paddingBottom:"1px"}}>Amount  <FaRupeeSign />{bookingData.book.price}/-</p>
                       <button className="btn btn-sm btn-success me-2" onClick={handleEditAmount}>
                     Edit Amount
                   </button>
@@ -316,9 +366,10 @@ const cancelbookingHandler = async () => {
               </div>
             </div>
           </div>
-          <div className="modal-footer">
+          <div className="modal-footer" style={{ backgroundColor: "#006849" }}>
             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseModal}>Close</button>
           </div>
+          
         </div>
       </div>
  {/* Edit Amount Modal */}
@@ -326,12 +377,12 @@ const cancelbookingHandler = async () => {
         <div className="modal fade show custom-backdrop" style={{ display: "block" }} tabIndex="-1">
           <div className="modal-dialog">
             <div className="modal-content" >
-              <div className="modal-header">
-                <h5 className="modal-title">Edit Amount</h5>
+              <div className="modal-header" style={{ backgroundColor: "#006849",padding:"10px" }}>
+                <h5 className="modal-title text-light">Edit Amount</h5>
                 <button type="button" className="btn-close" onClick={() => setShowEditModal(false)}></button>
               </div>
               <div className="modal-body">
-                <label><strong>New Amount:</strong></label>
+                <label>New Amount:</label>
                 <input
                   type="number"
                   className="form-control mt-2"
@@ -339,8 +390,8 @@ const cancelbookingHandler = async () => {
                   onChange={(e) => setNewAmount(e.target.value)}
                 />
               </div>
-              <div className="modal-footer">
-                <button className="btn btn-primary" >Save</button>
+              <div className="modal-footer" style={{ backgroundColor: "#006849" }}>
+                <button className="btn btn-primary" onClick={updateHandler} >Save</button>
                 <button className="btn btn-secondary" onClick={() => setShowEditModal(false)}>Cancel</button>
               </div>
             </div>
