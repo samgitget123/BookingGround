@@ -5,7 +5,6 @@ import Carousels from "./promotions/Carousels";
 import Getlocations from "./locations/Getlocations";
 import TypingText from "./animations/Typingtext";
 import { telanganaCities } from "../Data/CityData";
-import Showgrounds from "./Showgrounds";
 import CardComponent from "./Cardcomponent";
 const Herosection = () => {
   const userLocation = useSelector((state) => state.userLocation.userLocation);
@@ -15,7 +14,6 @@ const Herosection = () => {
   const handleCityChange = (e) => {
     const selectedCity = e.target.value;
     setSelectCity(selectedCity)
-    // dispatch(getUserlocation({ ...userLocation, city: selectedCity })); // Update city in Redux
   };
   return (
     <>

@@ -9,6 +9,7 @@ import Booking from './routes/bookingRoutes.js';
 import Payment from './routes/paymentRoutes.js'
 import { notfound , errorHandler } from './middleware/errorMiddleware.js';
 import path from 'path';
+import { upload } from './middleware/upload.js';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,6 +22,25 @@ const port = process.env.PORT || 5000;
 connectDB();
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// Image upload route
+// Image upload route
+app.post('/upload', upload.single('image'), (req, res) => {
+  try {
+    if (!req.file) {
+      console.log("No file received in the request.");
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    console.log("File received:", req.file);
+
+    const imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+    res.json({ imageUrl }); // Send back the image URL
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    res.status(500).json({ message: 'Error uploading image' });
+  }
+});
+
 
 //Ground Routes
 app.use('/api/ground' , groundRoutes)

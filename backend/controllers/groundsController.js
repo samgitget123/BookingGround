@@ -71,57 +71,6 @@ const createGround = asynHandler(async (req, res) => {
     }
 });
 
-// const getGroundsByLocation = asynHandler(async (req, res) => {
-//     try {
-//         const { location, state, city } = req.query; // Get query parameters
-
-//         // Build query object dynamically
-//         const query = {};
-
-//         // Check if 'location' is provided, and add it to the query object if it is
-//         if (location) query.location = { $regex: new RegExp(location, "i") }; // Case-insensitive
-        
-//         // Check if 'state' is provided, and add it to the query object
-//         if (state) query.state = { $regex: new RegExp(state, "i") }; // Case-insensitive
-        
-//         // Check if 'city' is provided, and add it to the query object
-//         if (city) query.city = { $regex: new RegExp(city, "i") }; // Case-insensitive
-
-//         // Fetch grounds based on the query
-//         const grounds = await Ground.find(query);
-
-//         if (!grounds || grounds.length === 0) {
-//             if (state && city) {
-//                 // If both state and city are provided and no results are found
-//                 res.status(404).json({ message: "No grounds found for the specified state and city combination" });
-//             } else if (state) {
-//                 // If only state is provided and no results are found
-//                 res.status(404).json({ message: "No grounds found for the specified state" });
-//             } else {
-//                 // If no grounds are found for any reason
-//                 res.status(404).json({ message: "No grounds found for the specified filters" });
-//             }
-//             return;
-//         }
-
-//         // Map response to match the required format
-//         const response = grounds.map((ground) => ({
-//             ground_id: ground.ground_id,
-//             data: {
-//                 name: ground.name,
-//                 location: ground.location,
-//                 city: ground.city, // Include city in the response
-//                 photo: ground.photo,
-//                 description: ground.description,
-//             },
-//         }));
-
-//         res.json(response);
-//     } catch (err) {
-//         res.status(500).json({ message: "Server Error", error: err.message });
-//     }
-// });
-
 const getGroundsByLocation = asynHandler(async (req, res) => {
     try {
         const { location, state, city } = req.query; // Get query parameters

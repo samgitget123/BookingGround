@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { useBaseUrl } from "../../Contexts/BaseUrlContext";
 import { fetchGroundDetails } from "../../redux/features/groundSlice";
@@ -14,6 +14,7 @@ const BookModal = ({
   selectdate,
   setSelectedSlots,
 }) => {
+  console.log(selectedSlots.length , 'no of slots')
   const { gid } = useParams();
   const [info, setInfo] = useState("");
   const [name, setName] = useState(""); // State for Name
@@ -24,7 +25,6 @@ const BookModal = ({
   const dispatch = useDispatch();
 
   const handleBooking = async (gid, selectedSlots, selectdate) => {
-    alert(`Total price: ${price}`)
     const result = await Swal.fire({
       title: "Confirm Booking",
       text: "Are you sure you want to book these slots?",
@@ -72,8 +72,8 @@ const BookModal = ({
     setName('');
     setEmail('');
     setMobile('');
-    setSelectedSlots([]);
-    setPrice(selectedSlots.length * 400)
+    //setSelectedSlots([]);
+    setPrice('')
     Swal.fire({
       title: "Success!",
       text: "Your booking has been confirmed.",
@@ -125,7 +125,6 @@ const BookModal = ({
 
     return `${startTime} - ${endTime}`;
   };
-  console.log(gid, selectedSlots, selectdate, 'bookingsinputs')
   const handleAmountChange = (e) => {
     setPrice(e.target.value);
   };
@@ -202,26 +201,12 @@ const BookModal = ({
                 />
               </div>
               <div className="d-flex justify-content-start">
-                {/* <div>
-                  <p>Total Amount</p>
-                </div> */}
-                {/* <div>
-                        <p><FaRupeeSign/>{selectedSlots.length * 400}/-</p>
-                        <p style={{padding:"0px"}}>Edit Amount</p>
-                    </div> */}
-
+               
                 <div className="input-group input-group-sm">
                   <span className="input-group-text" id="inputGroup-sizing-sm"><strong>Total Amount</strong></span>
                   <input type="number" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value={price} onChange={handleAmountChange} />
                 </div>
-                {/* <div>
-                  <button
-                    className="btn btn-primary btn-sm "
-                    onClick={() => setPrice(selectedSlots.length * 400)}
-                  >
-                   Edit
-                  </button>
-                </div> */}
+               
 
               </div>
 

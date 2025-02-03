@@ -18,7 +18,6 @@ export const fetchGroundDetails = createAsyncThunk(
     
     try {
       const response = await axios.get(`${baseUrl}/api/ground/${gid}?date=${date}`);
-      console.log(response.data, "reduxground");
       return response.data || {}; // Ensure it returns an object
     } catch (error) {
       console.error("API Error:", error.response?.data || error.message);

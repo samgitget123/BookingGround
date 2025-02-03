@@ -3,6 +3,7 @@ import axios from "axios";
 import { useBaseUrl } from "../../Contexts/BaseUrlContext";
 import { indianCities } from "../Data/CityData";
 import Swal from "sweetalert2";
+import { FaUser } from "react-icons/fa";
 const CreateGroundForm = () => {
   const { baseUrl } = useBaseUrl();
   const [formData, setFormData] = useState({
@@ -15,11 +16,9 @@ const CreateGroundForm = () => {
     photo: null,
     description: "",
   });
-
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [locationLoaded, setLocationLoaded] = useState(false);
-
   // Function to get the user's geolocation and fetch the details
   const getUserLocation = () => {
     if (navigator.geolocation) {
@@ -34,8 +33,6 @@ const CreateGroundForm = () => {
             );
 
             const address = res.data.address;
-            console.log(address, 'useraddress');
-            // Setting the location details in form state
             setFormData({
               ...formData,
               state: address.state || "",
@@ -134,18 +131,23 @@ const CreateGroundForm = () => {
       <h2 className="text-center mb-4">Add Ground Details</h2>
       <form onSubmit={handleSubmit} className="row g-3">
         {/* Name */}
-        <div className="col-md-6">
+        <div className="col-md-6 ">
           <label htmlFor="name" className="form-label">
             Ground Name
           </label>
-          <input
-            type="text"
-            className={`form-control ${errors.name ? "is-invalid" : ""}`}
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-          />
+          <div className="input-group">
+            <input
+              type="text"
+              className={`form-control ${errors.name ? "is-invalid" : ""}`}
+              id="name"
+              name="name"
+              placeholder="Enter your Ground Name"
+              value={formData.name}
+              onChange={handleInputChange}
+            />
+            <span className="input-group-text"><FaUser /></span>
+          </div>
+
           {errors.name && <div className="invalid-feedback">{errors.name}</div>}
         </div>
         <div className="col-md-6">

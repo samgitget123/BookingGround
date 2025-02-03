@@ -16,6 +16,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // CSS
 import './App.css';
 import Footer from './Components/Sections/Footer';
+//Admin
+import AdminDashboard from './Adminportal/AdminDashboard';
 const App = () => {
   return (
    <Provider store={store}>
@@ -30,6 +32,7 @@ const App = () => {
               <Route path="/viewground/:gid" element={<ViewGround />} />
               <Route path="/payment/:gid" element={<Payment />} />
               <Route path="/bookingdetails/:slot" element={<BookDetailsModal/>}/>
+              <Route path="/admindashboard" element={<AdminDashboard />} />
               <Route path="*" element={<NotFoundScreen />} />
             </Routes>
         </main>

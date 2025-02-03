@@ -1,34 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2'; // Import SweetAlert2
+import { useBaseUrl } from '../../Contexts/BaseUrlContext';
 import { useDispatch } from 'react-redux';
 import { deletebooking } from '../../redux/features/cancelbookingSlice';
 import { fetchGroundDetails } from '../../redux/features/groundSlice';
 import { updateprice } from '../../redux/features/updatepriceSlice';
-import { useNavigate } from "react-router-dom";
+import { CaptureandShare } from '../../watsappfeature/CaptureandShare';
+import convertSlotToTimeRange from '../../helpers/ConvertSlotToTimeRange';
 import { FaUser,  FaPhoneAlt,FaRegCalendarAlt, FaRegClock, FaRupeeSign  } from "react-icons/fa";
 const BookDetailsModal = ({ showModal, handleCloseModal, selectedSlot, selectdate, ground_id }) => {
   const [bookingDetails, setBookingDetails] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [newAmount, setNewAmount] = useState("");
   const dispatch = useDispatch();
-    const navigate = useNavigate();
+   const { baseUrl } = useBaseUrl();
   useEffect(() => {
     // This will run every time the modal opens (showModal is true) or the params change
     if (!showModal) return; // Don't run the effect if the modal isn't visible
     const getBookingDetails = async (ground_id, selectdate, selectedSlot) => {
-      const url = `http://localhost:5000/api/booking/bookdetails?ground_id=${ground_id}&date=${selectdate}&slot=${selectedSlot}`;
-      console.log('API URL:', url);
-    
+      const url = `${baseUrl}/api/booking/bookdetails?ground_id=${ground_id}&date=${selectdate}&slot=${selectedSlot}`;
+      console.log(url,'slotapi')
       try {
         const response = await axios.get(url);
-        console.log(response.data, 'bookingdata');
         setBookingDetails(response.data); // Set the fetched data to state
       } catch (error) {
         console.error('Error fetching booking details:', error);
       }
     };
-
+console.log(bookingDetails.data[0].slots,'bookingdetails')
     // Ensure all required params are available before making the API call
     if (ground_id && selectdate && selectedSlot) {
       getBookingDetails(ground_id, selectdate, selectedSlot);
@@ -74,8 +74,6 @@ const BookDetailsModal = ({ showModal, handleCloseModal, selectedSlot, selectdat
         });
         
         setShowEditModal(false); // Close the modal
-        //setShowEditModal(false)
-        //window.location.reload();
       } else {
         Swal.fire({
           icon: 'error',
@@ -98,55 +96,9 @@ const BookDetailsModal = ({ showModal, handleCloseModal, selectedSlot, selectdat
   console.log('Updating amount to:', newAmount);
 console.log('Booking ID:', bookingData?.book?.booking_id);
 
-  // const cancelbookingHandler=()=>{
-  //   const bookingData = bookingDetails?.data?.[0];
-    
-  //   const booking_id = bookingData.book.booking_id
-  //   const ground_id =  bookingData.ground_id
-  //   console.log(booking_id, ground_id ,'canceldeleteparams')
-  //   dispatch(deletebooking({booking_id,ground_id}))
-   
-  // }
-
-
-// const cancelbookingHandler = async () => {
-//   const bookingData = bookingDetails?.data?.[0];
-//   const booking_id = bookingData.book.booking_id;
-//   const ground_id = bookingData.ground_id;
-//   console.log(booking_id, ground_id, 'canceldeleteparams');
-  
-//   try {
-//     // Dispatch the deletebooking action and await the result
-//     const result = await dispatch(deletebooking({ booking_id, ground_id }));
-    
-//     // If the deletion is successful, show a success alert
-//     if (result?.payload?.success) {
-//       Swal.fire({
-//         icon: 'success',
-//         title: 'Booking Deleted!',
-//         text: 'Your booking has been successfully deleted.',
-//       });
-//     } else {
-//       // If not successful, show an error alert
-//       Swal.fire({
-//         icon: 'error',
-//         title: 'Error!',
-//         text: result?.payload?.message || 'An error occurred while deleting the booking.',
-//       });
-//     }
-//   } catch (error) {
-//     // Handle any errors that may occur during the deletebooking action
-//     Swal.fire({
-//       icon: 'error',
-//       title: 'Error!',
-//       text: error.message || 'Failed to delete booking.',
-//     });
-//   }
-// };
-
-
 const cancelbookingHandler = async () => {
   const bookingData = bookingDetails?.data?.[0];
+  console.log(bookingData, 'bookingData')
   const booking_id = bookingData.book.booking_id;
   const ground_id = bookingData.ground_id;
   console.log(booking_id, ground_id, 'canceldeleteparams');
@@ -195,38 +147,10 @@ const cancelbookingHandler = async () => {
         text: error.message || 'Failed to delete booking.',
       });
     }
-   // navigate(`/viewground/${ground_id}`);
+
   }
 };
 
-  // const handleSaveAmount = async () => {
-  //   try {
-  //     const updateUrl = `http://localhost:5000/api/booking/update-amount`;
-  //     await axios.post(updateUrl, {
-  //       booking_id: bookingData?.book?.booking_id,
-  //       new_amount: newAmount
-  //     });
-
-  //     // Update UI instantly
-  //     setBookingDetails(prevDetails => ({
-  //       ...prevDetails,
-  //       data: [
-  //         {
-  //           ...prevDetails.data[0],
-  //           book: {
-  //             ...prevDetails.data[0].book,
-  //             price: newAmount
-  //           }
-  //         }
-  //       ]
-  //     }));
-
-  //     setShowEditModal(false);
-  //   } catch (error) {
-  //     console.error("Error updating amount:", error);
-  //   }
-  // };
-  // If data is still being fetched, show a loading indicator
   if (!bookingData) {
     return (
       <div className="modal fade show" style={{ display: "block" }} tabIndex="-1" aria-labelledby="bookDetailsModalLabel" aria-hidden="true">
@@ -248,73 +172,40 @@ const cancelbookingHandler = async () => {
     );
   }
 
+ 
+
   const convertSlotToTimeRange = (slot) => {
-    console.log("Received slot:", slot); // Debugging
+    console.log("Slot received in convertSlotToTimeRange:", slot); // Debugging
 
-    // Convert slot if it's a string like "6.0" or "7.5"
-    if (typeof slot === "string") {
-      const parsedSlot = slot.split(".").map(Number);
-      if (parsedSlot.length === 2) {
-        slot = parsedSlot;  // Convert "6.0" → [6, 0], "6.5" → [6, 1]
-      } else {
-        console.error("Invalid slot format:", slot);
+    if (!Array.isArray(slot) || slot.length === 0) {
+        console.error("Unexpected slot format:", slot);
         return "Invalid Slot";
-      }
     }
 
-    // Round slot values to avoid precision issues
-    slot[0] = Math.round(slot[0]);  // Round the hour to nearest integer
-    slot[1] = Math.round(slot[1]);  // Round the half value (0 or 1)
+    // Convert slot values to numbers
+    let startSlot = parseFloat(slot[0]);  // First slot
+    let endSlot = parseFloat(slot[slot.length - 1]) + 0.5;  // Last slot + 30 min to complete range
 
-    const [hours, half] = slot;
-
-    let startHour, startMinutes, endHour, endMinutes, period, endPeriod;
-
-    // Determine the start time
-    if (hours === 0 || hours === 24) {
-      startHour = 12;
-      startMinutes = half === 0 ? "00" : "30";
-      period = "AM";
-    } else if (hours > 0 && hours < 12) {
-      startHour = hours;
-      startMinutes = half === 0 ? "00" : "30";
-      period = "AM";
-    } else if (hours === 12) {
-      startHour = 12;
-      startMinutes = half === 0 ? "00" : "30";
-      period = "PM";
-    } else {
-      startHour = hours - 12;
-      startMinutes = half === 0 ? "00" : "30";
-      period = "PM";
+    if (isNaN(startSlot) || isNaN(endSlot)) {
+        console.error("Invalid numeric slot values:", slot);
+        return "Invalid Slot";
     }
 
-    // Determine the end time
-    if (half === 0) {
-      endHour = hours;
-      endMinutes = "30";
-    } else {
-      endHour = hours + 1;
-      endMinutes = "00";
-    }
+    // Function to format time
+    const convertToTime = (timeSlot) => {
+        const hour = Math.floor(timeSlot);
+        const minutes = timeSlot % 1 === 0 ? "00" : "30";
+        const period = hour >= 12 ? "PM" : "AM";
+        const formattedHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;  
 
-    // Determine the end period
-    if (endHour === 24) {
-      endHour = 12;
-      endPeriod = "AM";
-    } else if (endHour === 12) {
-      endPeriod = "PM";
-    } else if (endHour > 12) {
-      endHour -= 12;
-      endPeriod = "PM";
-    } else {
-      endPeriod = "AM";
-    }
+        return `${formattedHour}:${minutes} ${period}`;
+    };
 
-    console.log(`Converted Time: ${startHour}:${startMinutes} ${period} - ${endHour}:${endMinutes} ${endPeriod}`);
+    return `${convertToTime(startSlot)} - ${convertToTime(endSlot)}`;
+};
 
-    return `${startHour}:${startMinutes} ${period} - ${endHour}:${endMinutes} ${endPeriod}`;
-  };
+
+
 
 
   return (
@@ -338,7 +229,7 @@ const cancelbookingHandler = async () => {
                     <p><FaRegCalendarAlt size={20} className="me-1 text-secondary" />{selectdate}</p>
                   </div>
                   <div>
-                    <p> <FaRegClock size={20} className="me-1 text-secondary" />{convertSlotToTimeRange(bookingData.slots)}</p>
+                    <p> <FaRegClock size={20} className="me-1 text-secondary" />{convertSlotToTimeRange(bookingDetails?.data[0]?.slots)}</p>
                   </div>
                 </div>
 
@@ -363,6 +254,8 @@ const cancelbookingHandler = async () => {
                       <button className='btn btn-sm btn-danger' onClick={cancelbookingHandler}>Cancel</button>
                     </div>
                 </div>
+                {/* <button className="btn btn-primary" onClick={CaptureandShare}>Share on WhatsApp</button> */}
+
               </div>
             </div>
           </div>

@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import loaderGif from "../../Images/loader.gif";
 import SearchBar from "./requires/SearchBar";
 import { useBaseUrl } from "../../Contexts/BaseUrlContext";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import axios from "axios";
 
 const CardComponent = ({ grounds, grounddata }) => {
-  const userAddress = useSelector((state) => state.userLocation.userLocation);
-  console.log(grounddata.selectCity, 'grounddata');
   const [currentPage, setCurrentPage] = useState(1);
   const [cardsPerPage, setCardsPerPage] = useState(8);
   const [loading, setLoading] = useState(true);
@@ -24,23 +21,21 @@ const CardComponent = ({ grounds, grounddata }) => {
     const location = ''; // Use dynamic location if available
 
     // Construct the URL for fetching grounds
-    const url = `http://localhost:5000/api/ground?state=${state}&city=${city}&location=${location}`;
-    console.log("Fetching from URL:", url); // Log URL to ensure it's correct
+    const url = `${baseUrl}/api/ground?state=${state}&city=${city}&location=${location}`;
+  
 
     const fetchGrounds = async () => {
       try {
         const response = await axios.get(url);
-        console.log("Fetched data:", response.data); // Log the response data
         setFilteredData(response.data); // Set the data to filteredData
       } catch (error) {
         console.error("Error fetching grounds:", error.response ? error.response.data : error.message);
-        // Show an alert or fallback UI for failed request
       }
     };
 
     fetchGrounds();
   }, [grounddata]);
-console.log(filteredData, 'filteredData')
+
   // Handle cards per page based on screen size
   useEffect(() => {
     const handleResize = () => {
@@ -72,7 +67,6 @@ console.log(filteredData, 'filteredData')
   const indexOfLastCard = currentPage * cardsPerPage;
   const indexOfFirstCard = indexOfLastCard - cardsPerPage;
   const currentCards = filteredData.slice(indexOfFirstCard, indexOfLastCard);
-console.log(currentCards, 'currentData')
   // Handle search bar filtering
   const handleSearch = (results) => {
     setFilteredData(results);

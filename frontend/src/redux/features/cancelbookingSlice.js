@@ -4,8 +4,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const deletebooking = createAsyncThunk(
   "deletebooking/deletedata",
   async ({ booking_id, ground_id }) => {
-    //http://localhost:5000/api/booking/deletebooking?booking_id=BKG8D98T8TOB&ground_id=GND7017ONXIO
-    console.log(booking_id, ground_id, 'paramsinredux')
+  
     try {
 
       const response = await fetch(
