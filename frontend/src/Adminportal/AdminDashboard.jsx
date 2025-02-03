@@ -220,7 +220,7 @@ const AdminDashboard = () => {
               <tbody>
                 {currentBookings.map((booking) => (
                   <tr key={booking._id} className="text-center">
-                    <td>{booking._id}</td>
+                    <td>{booking.book.booking_id}</td>
                     <td>{booking.ground_id}</td>
                     <td>{booking.name}</td>
                     <td>{booking.date}</td>
@@ -266,19 +266,23 @@ const AdminDashboard = () => {
       {/* Modal */}
       {selectedBooking && (
         <Modal show={showModal} onHide={handleCloseModal}>
-          <Modal.Header closeButton>
-            <Modal.Title>Booking Details</Modal.Title>
+          <Modal.Header closeButton style={{ backgroundColor: "#006849" }}>
+            <Modal.Title className="text-light">Booking Details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p><strong>Booking ID:</strong> {selectedBooking._id}</p>
-            <p><strong>Ground ID:</strong> {selectedBooking.ground_id}</p>
-            <p><strong>Name:</strong> {selectedBooking.name}</p>
-            <p><strong>Date:</strong> {selectedBooking.date}</p>
-            <p><strong>Mobile:</strong> {selectedBooking.mobile}</p>
+            <div className="d-flex justify-content-between flex-wrap">
+              <div><p><strong>Booking ID:</strong> {selectedBooking.book.booking_id}</p></div>
+              <div> <p><strong>Ground ID:</strong> {selectedBooking.ground_id}</p></div>
+              <div><p><strong>Date of booking:</strong> {selectedBooking.date}</p></div>
+              <div><p><strong>Mobile:</strong> {selectedBooking.mobile}</p></div>
+             
+            </div>
+            <div>
             <p><strong>Status:</strong> {selectedBooking.paymentStatus}</p>
             <p><strong>Total price: </strong> {selectedBooking.book.price}</p>
+            </div>
           </Modal.Body>
-          <Modal.Footer>
+          <Modal.Footer style={{ backgroundColor: "#006849" }}>
             <button className="btn btn-secondary" onClick={handleCloseModal}>Close</button>
           </Modal.Footer>
         </Modal>

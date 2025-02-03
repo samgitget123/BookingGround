@@ -28,7 +28,7 @@ const BookDetailsModal = ({ showModal, handleCloseModal, selectedSlot, selectdat
         console.error('Error fetching booking details:', error);
       }
     };
-console.log(bookingDetails.data[0].slots,'bookingdetails')
+console.log(bookingDetails?.data[0]?.slots,'bookingdetails')
     // Ensure all required params are available before making the API call
     if (ground_id && selectdate && selectedSlot) {
       getBookingDetails(ground_id, selectdate, selectedSlot);
@@ -60,7 +60,7 @@ console.log(bookingDetails.data[0].slots,'bookingdetails')
     try {
       // Dispatch the updateprice action with required payload
       const response = await dispatch(updateprice({
-        booking_id: bookingData.book.booking_id,
+        booking_id: bookingData?.book?.booking_id,
         newAmount: parseInt(newAmount, 10), // Ensure it's a number
         comboPack: false, // Default value, modify if needed
       }));
@@ -99,7 +99,7 @@ console.log('Booking ID:', bookingData?.book?.booking_id);
 const cancelbookingHandler = async () => {
   const bookingData = bookingDetails?.data?.[0];
   console.log(bookingData, 'bookingData')
-  const booking_id = bookingData.book.booking_id;
+  const booking_id = bookingData?.book?.booking_id;
   const ground_id = bookingData.ground_id;
   console.log(booking_id, ground_id, 'canceldeleteparams');
 
