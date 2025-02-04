@@ -35,7 +35,8 @@ const groundSchema = new mongoose.Schema({
       required: true,
     },
     photo: {
-      type: String, // Store the file path
+      type: [String], // Changed from String to array of Strings
+      required: true,
     },
     created_at: { 
       type: Date, 
@@ -45,6 +46,12 @@ const groundSchema = new mongoose.Schema({
       type: Map, 
       of: { bookedSlots: [String], default: [] } 
     },
+    ground_owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    }
+    
   }, { timestamps: true });
   
   const Ground = mongoose.model('Ground', groundSchema);

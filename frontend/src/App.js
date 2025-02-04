@@ -4,6 +4,9 @@ import Home from './Components/Sections/Home';
 import ViewGround from './Components/Sections/ViewGround';
 import Payment from './Components/Sections/Payment';
 import CreateGroundForm from './Components/Sections/CreategroundForm';
+//login
+import RegisterForm from './Adminportal/RegisterForm';
+import LoginForm from './Adminportal/LoginForm';
 import NotFoundScreen from './Components/Sections/requires/NotFoundScreen';
 import { BaseUrlProvider } from './Contexts/BaseUrlContext';
 import BookDetailsModal from './Components/Modals/BookDetailsModal';
@@ -27,6 +30,8 @@ const App = () => {
         <Header /> {/* Placed outside of <main> so that header appears on all pages */}
         <main className="app-main">
             <Routes>
+            <Route path="/login" element={<LoginForm />} />
+            <Route path="/register" element={<RegisterForm />} />
               <Route path="/" element={<Home />} />
               <Route path="/createground" element={<CreateGroundForm />} exact />
               <Route path="/viewground/:gid" element={<ViewGround />} />

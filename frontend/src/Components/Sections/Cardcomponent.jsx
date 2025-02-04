@@ -22,7 +22,7 @@ const CardComponent = ({ grounds, grounddata }) => {
 
     // Construct the URL for fetching grounds
     const url = `${baseUrl}/api/ground?state=${state}&city=${city}&location=${location}`;
-  
+
 
     const fetchGrounds = async () => {
       try {
@@ -95,65 +95,77 @@ const CardComponent = ({ grounds, grounddata }) => {
         <SearchBar data={grounds} onSearch={handleSearch} />
       </div>
       <div className="row g-2">
-      {currentCards && currentCards.length > 0 ? (
-            currentCards.map((playground, index) => (
+        {currentCards && currentCards.length > 0 ? (
+          currentCards.map((playground, index) => (
+            <div
+              className="col-lg-2 col-md-6 col-sm-12"
+              key={index}
+              onClick={() => handleCardClick(playground.ground_id)}
+            >
               <div
-                className="col-lg-2 col-md-6 col-sm-12"
-                key={index}
-                onClick={() => handleCardClick(playground.ground_id)}
+                className="card shadow-lg border-0 rounded"
+                style={{ width: "100%" }}
               >
                 <div
-                  className="card shadow-lg border-0 rounded"
-                  style={{ width: "100%" }}
+                  className="card-img-top"
+                  style={{
+                    height: "200px",
+                    backgroundColor: "#f0f0f0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                 >
-                  <div
-                    className="card-img-top"
-                    style={{
-                      height: "200px",
-                      backgroundColor: "#f0f0f0",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {playground.data.photo ? (
-                      <img
-                        src={`${baseUrl}/uploads/${playground.data.photo}`}
-                        alt={playground.data.name}
-                        className="img-fluid"
-                        style={{
-                          height: "100%",
-                          width: "100%",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : (
-                      <span>No Image Available</span>
-                    )}
-                  </div>
-                  <div className="card-body secondaryColor">
-                    <h4 className="card-title teritoryFont cardheadfont">
-                      <i className="fa-thin fa-cricket-bat-ball"></i>{" "}
-                      {playground.data.name}
-                    </h4>
-                    <p className="card-text teritoryFont">
-                      <i
-                        className="fas fa-map-marker-alt"
-                        style={{ color: "#00EE64" }}
-                      ></i>{" "}
-                      {playground.data.location}
-                    </p>
-                  </div>
+                  {Array.isArray(playground.data.photo) && playground.data.photo.length > 0 ? (
+                    <img
+                      src={`${baseUrl}/uploads/${playground.data.photo[0]}`}
+                      alt={playground.data.name}
+                      className="img-fluid"
+                      style={{
+                        height: "100%",
+                        width: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : playground.data.photo ? (
+                    <img
+                      src={`${baseUrl}/uploads/${playground.data.photo}`}
+                      alt={playground.data.name}
+                      className="img-fluid"
+                      style={{
+                        height: "100%",
+                        width: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <span>No Image Available</span>
+                  )}
+                </div>
+
+                <div className="card-body secondaryColor">
+                  <h4 className="card-title teritoryFont cardheadfont">
+                    <i className="fa-thin fa-cricket-bat-ball"></i>{" "}
+                    {playground.data.name}
+                  </h4>
+                  <p className="card-text teritoryFont">
+                    <i
+                      className="fas fa-map-marker-alt"
+                      style={{ color: "#00EE64" }}
+                    ></i>{" "}
+                    {playground.data.location}
+                  </p>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="col-12">
-              <p className="text-center fw-bold text-secondary">
-                No playgrounds available for the selected filters.
-              </p>
             </div>
-          )}
+          ))
+        ) : (
+          <div className="col-12">
+            <p className="text-center fw-bold text-secondary">
+              No playgrounds available for the selected filters.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="row justify-content-center mt-4">

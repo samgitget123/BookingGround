@@ -1,10 +1,29 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
-    phone_number:{type: String , required:true , unique:true , unique:true},
-    otp:{type: String},
-    is_verified: {type:Boolean , default:false},
-    created_at: {type: Date , default: Date.now}
-});
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Please add a name'],
+    },
+    phone_number: {
+      type: String,
+      required: [true, 'Please add a phone number'],
+      unique: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: [true, 'Please add a password'],
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
+    },
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('User' , userSchema);
+const User = mongoose.model('User', userSchema);
+export default User;

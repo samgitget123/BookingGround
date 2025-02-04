@@ -277,7 +277,32 @@ const getAllBookings = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Error fetching bookings", error });
   }
 });
-
+//Get all bookings details by date
+const getBookingsByDate = asyncHandler(async (req, res) => {
+  try {
+    // Get the date from the query parameter
+    const { date } = req.query;
+    if (!date) {
+      return res.status(400).json({ message: "Please provide a valid date" });
+    }
+    
+    // Fetch bookings for the specified date.
+    // Note: Adjust the query based on how you store dates (string, Date, etc.)
+    const bookings = await Booking.find({ date: date });
+    
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ message: `No bookings found for date: ${date}` });
+    }
+    
+    res.status(200).json({
+      success: true,
+      data: bookings,
+      message: `Bookings retrieved successfully for date: ${date}`,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching bookings by date", error });
+  }
+});
 // Search Bookings by Name, Mobile, Ground ID, or Booking ID
 const searchBookings = asyncHandler(async (req, res) => {
   const { name, mobile, ground_id, booking_id } = req.query;
@@ -307,7 +332,7 @@ const searchBookings = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-export { bookingGround, getBookings, getBookingDetailsBySlot, deleteBookingDetailsById, updateBookingPrice, getAllBookings, searchBookings };
+export { bookingGround, getBookings, getBookingDetailsBySlot, deleteBookingDetailsById, updateBookingPrice, getAllBookings, searchBookings, getBookingsByDate };
 
 
 

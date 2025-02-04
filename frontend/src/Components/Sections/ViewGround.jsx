@@ -207,7 +207,7 @@ const ViewGround = () => {
               </div>
               <div className="d-flex justify-content-center">
                 <img
-                  src={`${baseUrl}/uploads/${ground?.data?.image}`}
+                  src={`${baseUrl}/uploads/${ground?.data?.image[0]}`}
                   className="card-img-top ground-image img-fluid mb-3"
                   //alt={name || "Ground Image"}
                   style={{ width: '300px', height: '200px' }}

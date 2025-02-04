@@ -13,7 +13,7 @@ const CreateGroundForm = () => {
     state: "",
     city: "",
     stateDistrict: "",
-    photo: null,
+    photo: [],
     description: "",
   });
   const [errors, setErrors] = useState({});
@@ -81,50 +81,68 @@ const CreateGroundForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFileChange = (e) => {
-    setFormData({ ...formData, photo: e.target.files[0] });
-  };
+// Update file change handler to handle multiple files
+const handleFileChange = (e) => {
+  // Convert FileList to an array
+  const filesArray = Array.from(e.target.files);
+  setFormData((prev) => ({ ...prev, photo: filesArray }));
+};
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (validate()) {
-      setIsLoading(true);
-      const formDataToSubmit = new FormData();
-      Object.keys(formData).forEach((key) => {
+  if (validate()) {
+    setIsLoading(true);
+    const formDataToSubmit = new FormData();
+
+    // Append non-file fields
+    Object.keys(formData).forEach((key) => {
+      if (key !== "photo") {
         formDataToSubmit.append(key, formData[key]);
-      });
-      try {
-        const response = await axios.post(
-          `${baseUrl}/api/ground/createGround`,
-          formDataToSubmit,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        Swal.fire("Success", "Ground added successfully!", "success");
-
-        // Reset form fields after successful submission
-        setFormData({
-          name: "",
-          location: "",
-          country: "",
-          state: "",
-          city: "",
-          stateDistrict: "",
-          photo: null,
-          description: "",
-        });
-        setErrors({}); // Clear errors
-      } catch (error) {
-        Swal.fire("Error", "Failed to add ground. Please check your network connection.", "error");
-      } finally {
-        setIsLoading(false); // Always reset loading state
       }
+    });
+
+    // Append each file from the photo array
+    formData.photo.forEach((file) => {
+      formDataToSubmit.append("photo", file);
+    });
+
+    try {
+      const response = await axios.post(
+        `${baseUrl}/api/ground/createGround`,
+        formDataToSubmit,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      Swal.fire("Success", "Ground added successfully!", "success");
+
+      // Reset form fields after successful submission
+      setFormData({
+        name: "",
+        location: "",
+        country: "",
+        state: "",
+        city: "",
+        stateDistrict: "",
+        photo: [],
+        description: "",
+      });
+      setErrors({}); // Clear errors
+    } catch (error) {
+      Swal.fire(
+        "Error",
+        "Failed to add ground. Please check your network connection.",
+        "error"
+      );
+    } finally {
+      setIsLoading(false); // Always reset loading state
     }
-  };
+  }
+};
+
 
   return (
     <div className="container mt-5">
@@ -178,6 +196,7 @@ const CreateGroundForm = () => {
           </label>
           <input
             type="file"
+            multiple  // Allow multiple file selection
             className={`form-control ${errors.photo ? "is-invalid" : ""}`}
             id="photo"
             name="photo"

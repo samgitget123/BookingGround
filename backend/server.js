@@ -11,6 +11,7 @@ import connectDB from './config/db.js';
 import groundRoutes from './routes/groundRoutes.js';
 import booking from './routes/bookingRoutes.js';
 import Payment from './routes/paymentRoutes.js'
+import userRoutes from './routes/userRoutes.js';
 import Booking from './models/Booking.js';
 //import saveBookingDataToExcel from './excel/SaveBookingDataToExcel.js';
 import { notfound, errorHandler } from './middleware/errorMiddleware.js';
@@ -29,24 +30,25 @@ console.log(cron, 'cron')
 console.log(cron.getTasks(), 'crontasks'); // Log active cron tasks
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Image upload route
 // Image upload route
-app.post('/upload', upload.single('image'), (req, res) => {
-  try {
-    if (!req.file) {
-      console.log("No file received in the request.");
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
+// app.post('/upload', upload.single('image'), (req, res) => {
+//   try {
+//     if (!req.file) {
+//       console.log("No file received in the request.");
+//       return res.status(400).json({ message: 'No file uploaded' });
+//     }
 
-    console.log("File received:", req.file);
+//     console.log("File received:", req.file);
 
-    const imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
-    res.json({ imageUrl }); // Send back the image URL
-  } catch (error) {
-    console.error('Error uploading image:', error);
-    res.status(500).json({ message: 'Error uploading image' });
-  }
-});
+//     const imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+//     res.json({ imageUrl }); // Send back the image URL
+//   } catch (error) {
+//     console.error('Error uploading image:', error);
+//     res.status(500).json({ message: 'Error uploading image' });
+//   }
+// });
 const saveBookingDataToExcel = async () => {
   try {
     // Fetch bookings from MongoDB
@@ -112,10 +114,8 @@ cron.schedule('* * * * *', async () => {
   }
 });
 
-
-
-
-
+//User Routes
+app.use('/api/user', userRoutes)
 //Ground Routes
 app.use('/api/ground', groundRoutes)
 
