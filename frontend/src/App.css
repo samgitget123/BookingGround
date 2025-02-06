@@ -25,7 +25,7 @@
 
 /* Apply Poppins font to the entire app */
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 14px;
   line-height: 1.5;
   font-weight: 400;
@@ -40,6 +40,23 @@ body {
 }
 
 /************divinded line**********/
+.borderline {
+  display: block;
+  width: 80%;
+  height: 1px;
+  background-color: #ddd; /* Change this color as needed */
+  margin: 10px auto; /* Centers the line horizontally */
+}
+/**********loader spinner**********/
+.spinner-icon {
+  animation: spin 1s infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /*******slot book button disable****/
 .slot-button.disabled {
   background-color: #f0f0f0;
@@ -335,10 +352,14 @@ footer {
 .rotateImage {
   animation: rotate 20s infinite linear;
   /* 5 seconds for full rotation, infinitely repeating */
-  width: 300px;
+  width: 200px;
   /* Adjust width as needed */
-  height: 250px;
+  height: 150px;
   /* Maintain aspect ratio */
+}
+.brandlogosize{
+  width: 200px;
+  height: 200px
 }
 
 .herosection {

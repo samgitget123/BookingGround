@@ -28,6 +28,10 @@ const bookingSchema = new mongoose.Schema({
       required: true,
     },
   },
+  prepaid: {
+    type: Number, // Advance amount taken before full payment
+    default: 0, // Default to 0 if no advance payment is made
+  },
   paymentStatus: {
     type: String,
     enum: ["pending", "success", "failed"],

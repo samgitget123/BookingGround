@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, phone_number, password } = req.body;
+  const { name, phone_number, password , role} = req.body;
   console.log(req.body);
   
   // Validate input fields
@@ -29,6 +29,7 @@ const registerUser = asyncHandler(async (req, res) => {
     name,
     phone_number,
     password: hashedPassword,
+    role: req.body.role || 'user'
   });
   
   if (user) {

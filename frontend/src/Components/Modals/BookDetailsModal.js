@@ -28,7 +28,7 @@ const BookDetailsModal = ({ showModal, handleCloseModal, selectedSlot, selectdat
         console.error('Error fetching booking details:', error);
       }
     };
-console.log(bookingDetails?.data[0]?.slots,'bookingdetails')
+
     // Ensure all required params are available before making the API call
     if (ground_id && selectdate && selectedSlot) {
       getBookingDetails(ground_id, selectdate, selectedSlot);
@@ -92,9 +92,7 @@ console.log(bookingDetails?.data[0]?.slots,'bookingdetails')
   };
   
  
-  console.log(newAmount, 'newAmount before sending API request');
-  console.log('Updating amount to:', newAmount);
-console.log('Booking ID:', bookingData?.book?.booking_id);
+
 
 const cancelbookingHandler = async () => {
   const bookingData = bookingDetails?.data?.[0];
@@ -119,8 +117,12 @@ const cancelbookingHandler = async () => {
     try {
       // Dispatch the deletebooking action and await the result
       const deleteResult = await dispatch(deletebooking({ booking_id, ground_id }));
+     
       if(deleteResult){
-        dispatch(fetchGroundDetails({ ground_id, date: selectdate }));
+        console.log( ground_id, selectdate , 'forcanceldisplay')
+       dispatch(fetchGroundDetails({ ground_id, date: selectdate }));
+       cancelbookingHandler();
+        
       }
       // If the deletion is successful, show a success alert
       if (deleteResult?.payload?.success) {
@@ -161,7 +163,7 @@ const cancelbookingHandler = async () => {
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseModal}></button>
             </div>
             <div className="modal-body">
-              <p>Loading booking details...</p>
+              <p>{!bookingData?'booking may be deleted':'please refresh the page'}</p>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseModal}>Close</button>

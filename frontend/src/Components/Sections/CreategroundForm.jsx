@@ -15,6 +15,7 @@ const CreateGroundForm = () => {
     stateDistrict: "",
     photo: [],
     description: "",
+    ground_owner: "",
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -71,6 +72,7 @@ const CreateGroundForm = () => {
     if (!formData.city) newErrors.city = "City is required."; // Validation for city
     if (!formData.description) newErrors.description = "Description is required.";
     if (!formData.photo) newErrors.photo = "Photo is required.";
+    if (!formData.ground_owner) newErrors.ground_owner = "Ground owner is required.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -129,6 +131,7 @@ const handleSubmit = async (e) => {
         stateDistrict: "",
         photo: [],
         description: "",
+        ground_owner: "",
       });
       setErrors({}); // Clear errors
     } catch (error) {
@@ -167,6 +170,19 @@ const handleSubmit = async (e) => {
           </div>
 
           {errors.name && <div className="invalid-feedback">{errors.name}</div>}
+        </div>
+        <div className="col-md-6">
+          <label htmlFor="ground_owner" className="form-label">Ground Owner</label>
+          <input
+            type="text"
+            className={`form-control ${errors.ground_owner ? "is-invalid" : ""}`}
+            id="ground_owner"
+            name="ground_owner"
+            placeholder="Enter Owner Name"
+            value={formData.ground_owner}
+            onChange={handleInputChange}
+          />
+          {errors.ground_owner && <div className="invalid-feedback">{errors.ground_owner}</div>}
         </div>
         <div className="col-md-6">
           <label htmlFor="city" className="form-label">
@@ -295,8 +311,8 @@ const handleSubmit = async (e) => {
         </div>
 
         {/* Submit Button */}
-        <div className="col-12 text-center my-3">
-          <button type="submit" className="btn btn-lg btn-primary w-100" disabled={isLoading}>
+        <div className="col-12 text-center my-5">
+          <button type="submit" className="btn btn-lg btn-primary w-50" disabled={isLoading}>
             {isLoading ? "Submitting..." : "Submit"}
           </button>
         </div>

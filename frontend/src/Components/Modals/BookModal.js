@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useParams } from "react-router-dom";
-
+import { FaSpinner } from "react-icons/fa";
 import { useBaseUrl } from "../../Contexts/BaseUrlContext";
 import { fetchGroundDetails } from "../../redux/features/groundSlice";
 import { useDispatch } from "react-redux";
@@ -20,10 +20,13 @@ const BookModal = ({
   const [name, setName] = useState(""); // State for Name
   const [email, setEmail] = useState(""); // State for Email
   const [mobile, setMobile] = useState(""); // State for Mobile
-  const [price, setPrice] = useState(selectedSlots.length * 400);
+  const [price, setPrice] = useState('');
+  const [prepaid, setPrepaid] = useState(0);  // Prepaid Amount
+  const [paymentStatus, setPaymentStatus] = useState("pending");
+  const [loading, setLoading] = useState(false)
   const { baseUrl } = useBaseUrl();
   const dispatch = useDispatch();
-
+  const remainingAmount = price - prepaid;
   const handleBooking = async (gid, selectedSlots, selectdate) => {
     const result = await Swal.fire({
       title: "Confirm Booking",
@@ -43,10 +46,13 @@ const BookModal = ({
       name: name,   // Include name
       email: email, // Include email
       mobile: mobile, // Include mobile number
-      price: price
+      price: price,
+      prepaid,
+      paymentStatus,
     };
 
     try {
+      setLoading(true);
       const response = await fetch(`${baseUrl}/api/booking/book-slot`, {
         method: "POST",
         headers: {
@@ -73,7 +79,8 @@ const BookModal = ({
     setEmail('');
     setMobile('');
     //setSelectedSlots([]);
-    setPrice('')
+    setPrice('');
+    setPaymentStatus("pending");
     Swal.fire({
       title: "Success!",
       text: "Your booking has been confirmed.",
@@ -83,6 +90,8 @@ const BookModal = ({
       
     } catch (error) {
       console.error("Error booking slot:", error);
+    }finally {
+      setLoading(false); // Hide spinner
     }
   };
 
@@ -201,13 +210,36 @@ const BookModal = ({
                 />
               </div>
               <div className="d-flex justify-content-start">
-               
                 <div className="input-group input-group-sm">
                   <span className="input-group-text" id="inputGroup-sizing-sm"><strong>Total Amount</strong></span>
                   <input type="number" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value={price} onChange={handleAmountChange} />
                 </div>
-               
+              </div>
 
+               {/* Prepaid Amount Input */}
+               <div className="my-3 input-group">
+                <span className="input-group-text"><FaRupeeSign /></span>
+                <input type="number" className="form-control" placeholder="Enter Prepaid Amount" value={prepaid} onChange={(e) => setPrepaid(Number(e.target.value))} />
+              </div>
+{/* Remaining Amount */}
+<div className="d-flex justify-content-between my-3">
+                <strong>Remaining Amount:</strong> <span><FaRupeeSign /> {remainingAmount}</span>
+              </div>
+              {/* Payment Status Selection */}
+              <div className="text-start my-3">
+                <strong>Payment Status:</strong>
+                <div className="form-check">
+                  <input className="form-check-input" type="radio" id="pending" value="pending" checked={paymentStatus === "pending"} onChange={() => setPaymentStatus("pending")} />
+                  <label className="form-check-label" htmlFor="pending">Pending</label>
+                </div>
+                <div className="form-check">
+                  <input className="form-check-input" type="radio" id="success" value="success" checked={paymentStatus === "success"} onChange={() => setPaymentStatus("success")} />
+                  <label className="form-check-label" htmlFor="success">Success</label>
+                </div>
+                <div className="form-check">
+                  <input className="form-check-input" type="radio" id="failed" value="failed" checked={paymentStatus === "failed"} onChange={() => setPaymentStatus("failed")} />
+                  <label className="form-check-label" htmlFor="failed">Failed</label>
+                </div>
               </div>
 
               {info && <div className="alert alert-success">{info}</div>}
@@ -223,6 +255,7 @@ const BookModal = ({
               >
                 Close
               </button>
+             
               <button
                 type="button"
                 className="btn btn-primary"

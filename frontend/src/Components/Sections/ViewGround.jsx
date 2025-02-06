@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import CartButtons from "../Buttons/CartButtons";
 import BookModal from "../Modals/BookModal";
 import { fetchGroundDetails } from '../../redux/features/groundSlice';
-import axios from 'axios';
 import { useBaseUrl } from "../../Contexts/BaseUrlContext";
 import { useDispatch, useSelector } from "react-redux";
 import BookDetailsModal from "../Modals/BookDetailsModal";
@@ -15,6 +13,7 @@ import { Groundslots } from "../../helpers/Groundslots";
 import convertSlotToTimeRange from "../../helpers/ConvertSlotToTimeRange";
 import { formatDate } from "../../helpers/FormatDate";
 import { calculateCurrentTime } from "../../helpers/CalucateCurrentTime";
+import { FaSpinner } from "react-icons/fa";
 const ViewGround = () => {
   const { gid } = useParams();
   const { ground, loading, error } = useSelector((state) => state.ground);
@@ -94,7 +93,14 @@ const ViewGround = () => {
     setClickedslot(null); // Reset selected slot
   };
   /////Get booking details////
-
+  if (loading) {
+    return (
+      <div className="loading-container d-flex justify-content-center align-items-center my-5">
+        <FaSpinner className="spinner-icon" style={{ fontSize: "50px", color: "grey", animation: "spin 1s infinite" }} />
+        <p className="loading-text">Fetching Ground Details...</p>
+      </div>
+    );
+  }
   return (
     <section className="viewcardbg">
       <div className="selectdatesection">

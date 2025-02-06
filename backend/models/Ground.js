@@ -47,8 +47,7 @@ const groundSchema = new mongoose.Schema({
       of: { bookedSlots: [String], default: [] } 
     },
     ground_owner: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
       required: true
     }
     

@@ -190,7 +190,7 @@ import Booking from '../models/Booking.js';
 //     }
 //   });
 const createGround = asynHandler(async (req, res) => {
-    const { name, location, city, country, state, stateDistrict, description } = req.body;
+    const { name, location, city, country, state, stateDistrict, description , ground_owner } = req.body;
   
     // Log request body and files for debugging
     console.log("Request Body:", req.body);
@@ -205,7 +205,7 @@ const createGround = asynHandler(async (req, res) => {
     const photoPaths = req.files.map((file) => file.filename);
   
     // Validate required fields
-    if (!name || !location || !city || !country || !state || !stateDistrict || !description) {
+    if (!name || !location || !city || !country || !state || !stateDistrict || !description || !ground_owner) {
       res.status(404);
       throw new Error(
         "All fields (name, location, city, country, state, stateDistrict, description) are required"
@@ -223,6 +223,7 @@ const createGround = asynHandler(async (req, res) => {
         stateDistrict,
         photo: photoPaths, // Store an array of photo paths
         description,
+        ground_owner
       });
   
       // Save the new ground document to the database
@@ -241,6 +242,7 @@ const createGround = asynHandler(async (req, res) => {
           stateDistrict: newGround.stateDistrict,
           photo: newGround.photo,
           description: newGround.description,
+          ground_owner: newGround.ground_owner
         },
       });
     } catch (error) {

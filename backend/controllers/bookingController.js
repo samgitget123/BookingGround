@@ -5,57 +5,60 @@ import Ground from "../models/Ground.js";
 import generateBookingID from "../Utils.js";
 
 const bookingGround = asyncHandler(async (req, res) => {
-  const { ground_id, date, slots, comboPack, name, mobile, email, price } = req.body;
+  const { ground_id, date, slots, comboPack, name, mobile, email, price, prepaid } = req.body;
 
   if (!price || price <= 0) {
     return res.status(400).json({ message: "Invalid total price provided" });
+  }
+  if (prepaid < 0 || prepaid > price) {
+    return res.status(400).json({ message: "Invalid prepaid amount" });
   }
 
   const bookingDateformat = new Date(date);
   const bookingDate = bookingDateformat.toISOString().slice(0, 10); // 'YYYY-MM-DD'
 
-  const ground = await Ground.findOne({ ground_id });
-  if (!ground) {
-    return res.status(404).json({ message: "Ground not found" });
-  }
+//   const ground = await Ground.findOne({ ground_id });
+//   if (!ground) {
+//     return res.status(404).json({ message: "Ground not found" });
+//   }
 
-  // Ensure the slots field is initialized if not present
-  if (!ground.slots) {
-    ground.slots = new Map();
-  }
+//   // Ensure the slots field is initialized if not present
+//   if (!ground.slots) {
+//     ground.slots = new Map();
+//   }
 
-  // Access the slot for the selected date
-  let dateSlotEntry = ground.slots.get(bookingDate);
+//   // Access the slot for the selected date
+//   let dateSlotEntry = ground.slots.get(bookingDate);
 
-  if (!dateSlotEntry) {
-    // If no slots exist for this date, initialize with an empty array
-    dateSlotEntry = { bookedSlots: [] };
-    ground.slots.set(bookingDate, dateSlotEntry);
-  }
+//   if (!dateSlotEntry) {
+//     // If no slots exist for this date, initialize with an empty array
+//     dateSlotEntry = { bookedSlots: [] };
+//     ground.slots.set(bookingDate, dateSlotEntry);
+//   }
 
-  // Check if any of the selected slots are already booked
-  const alreadyBooked = dateSlotEntry.bookedSlots.filter((slot) =>
-    slots.includes(slot)
-  );
+//   // Check if any of the selected slots are already booked
+//   const alreadyBooked = dateSlotEntry.bookedSlots.filter((slot) =>
+//     slots.includes(slot)
+//   );
+// console.log(alreadyBooked , 'alreadybooked')
+//   if (alreadyBooked.length > 0) {
+//     return res.status(409).json({
+//       message: "Some slots are already booked",
+//       conflicts: alreadyBooked,
+//     });
+//   }
 
-  if (alreadyBooked.length > 0) {
-    return res.status(409).json({
-      message: "Some slots are already booked",
-      conflicts: alreadyBooked,
-    });
-  }
+//   // Update the bookedSlots array with the selected slots
+//   dateSlotEntry.bookedSlots.push(...slots);
 
-  // Update the bookedSlots array with the selected slots
-  dateSlotEntry.bookedSlots.push(...slots);
+//   // Ensure uniqueness of booked slots (optional, in case of any duplication)
+//   dateSlotEntry.bookedSlots = [...new Set(dateSlotEntry.bookedSlots)];
 
-  // Ensure uniqueness of booked slots (optional, in case of any duplication)
-  dateSlotEntry.bookedSlots = [...new Set(dateSlotEntry.bookedSlots)];
+//   // Ensure the ground schema is updated with the new slots
+//   ground.markModified("slots");
 
-  // Ensure the ground schema is updated with the new slots
-  ground.markModified("slots");
-
-  // Save the updated ground document with booked slots
-  await ground.save();
+//   // Save the updated ground document with booked slots
+//   await ground.save();
 
   // Generate booking ID
   const booking_id = generateBookingID();
@@ -69,8 +72,9 @@ const bookingGround = asyncHandler(async (req, res) => {
     name,
     mobile,
     email,
+    prepaid,
     book: { booking_id, price: price }, // Using user-provided price
-    paymentStatus: "pending",
+    paymentStatus: prepaid > 0 ? "pending" : "pending",
   });
 
   await booking.save();
@@ -78,7 +82,7 @@ const bookingGround = asyncHandler(async (req, res) => {
   // Return the success response
   res.status(201).json({
     success: true,
-    data: { ground_id, date, slots, comboPack, price: price, booking_id, name, mobile, email },
+    data: { ground_id, date, slots, comboPack, price: price, prepaid,  booking_id, name, mobile, email },
     message: "Slot booked successfully",
   });
 });
@@ -164,50 +168,50 @@ const deleteBookingDetailsById = asyncHandler(async (req, res) => {
   await Booking.findOneAndDelete({ "book.booking_id": booking_id, ground_id });
 
   // Find the ground
-  const ground = await Ground.findOne({ ground_id });
+//   const ground = await Ground.findOne({ ground_id });
+// console.log(ground, 'groundDetails')
+//   if (!ground) {
+//     return res.status(404).json({ message: "Ground not found for the given ground_id" });
+//   }
 
-  if (!ground) {
-    return res.status(404).json({ message: "Ground not found for the given ground_id" });
-  }
+//   console.log('Booking Date:', booking.date);
+//   console.log('Ground Slots:', ground.slots);
 
-  console.log('Booking Date:', booking.date);
-  console.log('Ground Slots:', ground.slots);
+//   // ✅ Correct way to get date key in Mongoose Map
+//   const slotData = ground.slots.get(booking.date);  // Use `.get()` for Mongoose Map
+//   console.log('Slot Data for Date:', slotData);
 
-  // ✅ Correct way to get date key in Mongoose Map
-  const slotData = ground.slots.get(booking.date);  // Use `.get()` for Mongoose Map
-  console.log('Slot Data for Date:', slotData);
+//   if (slotData) {
+//     const bookedSlots = slotData.bookedSlots;
+//     const slotTimeToRemove = booking.slot_time; 
+//     const index = bookedSlots.indexOf(slotTimeToRemove);
 
-  if (slotData) {
-    const bookedSlots = slotData.bookedSlots;
-    console.log('Booked Slots Before Deletion:', bookedSlots);
+//     if (index > -1) {
+//       bookedSlots.splice(index, 1); 
+//     }
 
-  
-    const slotTimeToRemove = booking.slot_time; // Ensure it's a string
-    const index = bookedSlots.indexOf(slotTimeToRemove);
-    console.log('Index of Slot in Array:', index);
+//     if (bookedSlots.length === 0) {
+//       ground.slots.delete(booking.date); 
+//     } else {
+//       ground.slots.set(booking.date, slotData);
+//     }
 
-    if (index > -1) {
-      bookedSlots.splice(index, 1);
-    }
 
-    // ✅ If no booked slots remain, remove the date key
-    if (bookedSlots.length === 0) {
-      ground.slots.delete(booking.date);
-    } else {
-      ground.slots.set(booking.date, slotData); // Update Map
-    }
 
-    ground.markModified("slots");
-    await ground.save();
-  } else {
-    return res.status(400).json({ message: "No booked slots found for the given date in the ground" });
-  }
+//     ground.markModified("slots");
+//     await ground.save();
+  // } else {
+  //   return res.status(400).json({ message: "No booked slots found for the given date in the ground" });
+  // }
 
   res.status(200).json({
     success: true,
     message: "Booking and slots deleted successfully",
   });
 });
+
+
+
 
 
 
