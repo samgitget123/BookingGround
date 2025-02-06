@@ -273,13 +273,19 @@ const AdminDashboard = () => {
             <div className="d-flex justify-content-between flex-wrap">
               <div><p><strong>Booking ID:</strong> {selectedBooking.book.booking_id}</p></div>
               <div> <p><strong>Ground ID:</strong> {selectedBooking.ground_id}</p></div>
-              <div><p><strong>Date of booking:</strong> {selectedBooking.date}</p></div>
-              <div><p><strong>Mobile:</strong> {selectedBooking.mobile}</p></div>
-             
+              
+            </div>
+            <div className="d-flex justify-content-between flex-wrap">
+            <div><p><strong>Name:</strong> {selectedBooking.name}</p></div>
+            <div><p><strong>Mobile:</strong> {selectedBooking.mobile}</p></div>
+            </div>
+            <div className="d-flex justify-content-between flex-wrap">
+            <div><p><strong>Date of booking:</strong> {selectedBooking.date}</p></div>
+           
+            <p><strong>Total price: </strong> {selectedBooking.book.price}</p>
             </div>
             <div>
             <p><strong>Status:</strong> {selectedBooking.paymentStatus}</p>
-            <p><strong>Total price: </strong> {selectedBooking.book.price}</p>
             </div>
           </Modal.Body>
           <Modal.Footer style={{ backgroundColor: "#006849" }}>

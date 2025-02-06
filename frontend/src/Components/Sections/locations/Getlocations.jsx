@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { getUserlocation } from "../../../redux/features/userlocationSlice";
+import { IoLocationOutline } from "react-icons/io5";
 const Getlocations = ({ disabled }) => {
   const dispatch = useDispatch();
   const [useraddress, setUseradress] = useState(null);
@@ -60,12 +61,15 @@ const Getlocations = ({ disabled }) => {
   return (
     <>
       <button
-        className="btn btn-sm btn-primary my-3"
+        className="btn btn-sm btn-success  my-3"
         onClick={requestLocationAccess}
         disabled={disabled}
       >
-        Use Current Location
+         <IoLocationOutline size={24} color="#00EE64" /> 
+         Use Current Location
       </button>
+      
+     
 
       {useraddress && (
         <p>
