@@ -1,11 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
+const baseUrl = `https://bookingapp-r0fo.onrender.com`; // Update this for production
+//https://bookingapp-r0fo.onrender.com
+//http://localhost:5000
 // Async thunk to fetch grounds data
 export const fetchGrounds = createAsyncThunk(
   "fetchGrounds/fetchData",
   async ({ state, city, location }) => {
     const response = await fetch(
-      `http://localhost:5000/api/ground?state=${state}&city=${city}&location=${location}`
+      `${baseUrl}/api/ground?state=${state}&city=${city}&location=${location}`
     );
     if (!response.ok) {
       throw new Error("Failed to fetch grounds");

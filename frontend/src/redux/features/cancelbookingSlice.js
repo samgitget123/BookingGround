@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
+const baseUrl = `https://bookingapp-r0fo.onrender.com`; // Update this for production
+//https://bookingapp-r0fo.onrender.com
+//http://localhost:5000
 // Define the deletebooking async thunk
 export const deletebooking = createAsyncThunk(
   "deletebooking/deletedata",
@@ -8,7 +10,7 @@ export const deletebooking = createAsyncThunk(
     try {
 
       const response = await fetch(
-        `http://localhost:5000/api/booking/deletebooking?booking_id=${booking_id}&ground_id=${ground_id}`,
+        `${baseUrl}/api/booking/deletebooking?booking_id=${booking_id}&ground_id=${ground_id}`,
         { method: 'DELETE' }
       );
       if (!response.ok) {

@@ -337,9 +337,9 @@ const BookDetailsModal = ({ showModal, handleCloseModal, selectedSlot, selectdat
 
                 <div className='d-flex justify-content-between my-1'>
                   <div>
-                    <p style={{ paddingBottom: "1px" }}>Amount  <FaRupeeSign />{bookingData.book.price}/-</p>
-                    <button className="btn btn-sm btn-success btn-sm  me-2" onClick={handleEditAmount}>
-                      Edit Amount
+                    <p style={{padding:"0px"}}>Amount  <FaRupeeSign />{bookingData.book.price}/-</p>
+                    {/* <span  onClick={handleEditAmount}><a className="text-decoration-underline text-dark cursor-pointer">Edit Amount</a></span> */}
+                    <button className="btn btn-sm btn-success btn-sm  me-2" onClick={handleEditAmount}>Edit Amount
                     </button>
                   </div>
                   

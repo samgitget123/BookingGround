@@ -1,39 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-// Define the updateprice async thunk
-// export const updateprice = createAsyncThunk(
-//   "updateprice/updatedata",
-//   async ({ booking_id, newAmount, combopack }) => {
-//     try {
-//       const response = await fetch("http://localhost:5000/api/booking/updateprice", {
-//         method: 'PUT',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//           booking_id,
-//           newAmount,
-//           combopack,
-//         }),
-//       });
 
-//       if (!response.ok) {
-//         throw new Error("Failed to update the price");
-//       }
-
-//       const data = await response.json();
-//       console.log(data, 'updateprice');
-//       return data; // Return the fetched data
-//     } catch (error) {
-//       throw new Error(error.message);
-//     }
-//   }
-// );
+const baseUrl = `https://bookingapp-r0fo.onrender.com`; // Update this for production
+//https://bookingapp-r0fo.onrender.com
+//http://localhost:5000
 export const updateprice = createAsyncThunk(
   "updateprice/updatedata",
   async ({ booking_id, newAmount, combopack }) => {
     try {
-      const response = await fetch("http://localhost:5000/api/booking/updateprice", {
+      const response = await fetch(`${baseUrl}/api/booking/updateprice`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
