@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+import {baseUrl} from "./baseUrlendpoint";
 const initialState = {
   ground_id: "",
   bookingdetails: {
@@ -7,7 +7,7 @@ const initialState = {
     slots: [],
   },
 };
-
+console.log(baseUrl, 'reduxurl')
 const bookingSlice = createSlice({
   name: "bookingdetails",
   initialState,

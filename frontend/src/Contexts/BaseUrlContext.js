@@ -13,7 +13,7 @@ export const BaseUrlProvider = ({ children }) => {
     "https://bookmyground.onrender.com"
   );
 //http://localhost:5000
-//https://bookingapp-r0fo.onrender.com
+//https://bookmyground.onrender.com
   // Method to update the base URL
   const switchBaseUrl = (newUrl) => {
     setBaseUrl(newUrl);

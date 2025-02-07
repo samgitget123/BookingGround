@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import brandlogo from "../../Images/sportpack.png";
+import brandlogo from "../../Images/bmgicondisplay.jpeg";
 import Carousels from "./promotions/Carousels";
 import Getlocations from "./locations/Getlocations";
 import TypingText from "./animations/Typingtext";
@@ -31,7 +31,7 @@ const Herosection = () => {
               style={{ borderRadius: "0px 0px 40px 40px" }}
             >
               <div className="d-flex align-items-center justify-content-center text-center">
-                <div className=" mt-md-5">
+                <div className=" mt-md-2">
                   <div className=" d-none d-sm-block mb-sm-5">
                     <img
                       className="img-fluid brandlogosize" //rotateImage

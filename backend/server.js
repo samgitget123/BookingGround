@@ -24,12 +24,12 @@ const app = express();
 // app.use("/uploads", express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 // Configure CORS options to allow only your frontend domain
-const corsOptions = {
-  origin: 'https://bookmyground.onrender.com',
-  optionsSuccessStatus: 200, // For legacy browser support
-};
+// const corsOptions = {
+//   origin: 'http://localhost:5000',
+//   optionsSuccessStatus: 200, // For legacy browser support
+// };
 
-app.use(cors(corsOptions)); // Enable CORS for all routes
+app.use(cors()); // Enable CORS for all routes
 const port = process.env.PORT || 5000;
 connectDB();
 console.log(cron, 'cron')

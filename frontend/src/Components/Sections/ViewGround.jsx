@@ -132,7 +132,7 @@ const ViewGround = () => {
       </div>
       <div className="container-fluid pt-3">
         {/* Available Slots Section */}
-        <div className="Carticon d-sm-none d-flex justify-content-center my-3">
+        <div className="Carticon d-sm-none d-flex justify-content-center mt-2">
           <CartButtons onClick={confirnnowClick} />
         </div>
 
@@ -179,7 +179,7 @@ const ViewGround = () => {
                 </ul>
               </div>
               <div className="mt-sm-3 d-flex ">
-                <div >
+                <div className="text-center">
                   <h6 className="text-light mt-3 text-center">Booked Slots:</h6>
                   <ul className="list-unstyled d-flex flex-wrap flex-column flex-sm-row text-center slotboxes">
                     {bookedslotsbydate.length > 0 ? (
@@ -207,14 +207,14 @@ const ViewGround = () => {
             </div>
           </div>
           <div className="col-lg-3 col-md-12 col-sm-12 col-xs-12 col-xlg-6 g-0  ">
-            <div className="card shadow-lg border-0 w-80 rounded secondaryColor viewcardFont  mx-auto">
+            <div className="card shadow-lg border-0 w-80 rounded secondaryColor viewcardFont  mx-auto ">
               <div className="mobileconfirmnow Carticon  d-flex justify-content-center my-3">
-                <CartButtons onClick={confirnnowClick} count={selectedSlots} />
+              {selectedSlots.length > 0 &&  <CartButtons onClick={confirnnowClick} count={selectedSlots} />}
               </div>
               <div className="d-flex justify-content-center">
                 <img
                   src={`${baseUrl}/uploads/${ground?.data?.image[0]}`}
-                  className="card-img-top ground-image img-fluid mb-3"
+                  className="card-img-top ground-image img-fluid my-3"
                   //alt={name || "Ground Image"}
                   style={{ width: '300px', height: '200px' }}
                 />
@@ -231,6 +231,11 @@ const ViewGround = () => {
         </div>
         {/* Modal */}
       </div>
+     <section>
+      <div className="container">
+       
+      </div>
+     </section>
       {/* Modal for Booking Confirmation */}
       <BookModal
         showModal={showModal}

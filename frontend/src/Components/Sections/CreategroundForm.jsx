@@ -4,6 +4,9 @@ import { useBaseUrl } from "../../Contexts/BaseUrlContext";
 import { indianCities } from "../Data/CityData";
 import Swal from "sweetalert2";
 import { FaUser } from "react-icons/fa";
+import brandIocn from "../../Images/bmgicondisplay.png";
+import CaptionText from "./animations/CaptionText";
+
 const CreateGroundForm = () => {
   const { baseUrl } = useBaseUrl();
   const [formData, setFormData] = useState({
@@ -83,241 +86,266 @@ const CreateGroundForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-// Update file change handler to handle multiple files
-const handleFileChange = (e) => {
-  // Convert FileList to an array
-  const filesArray = Array.from(e.target.files);
-  setFormData((prev) => ({ ...prev, photo: filesArray }));
-};
+  // Update file change handler to handle multiple files
+  const handleFileChange = (e) => {
+    // Convert FileList to an array
+    const filesArray = Array.from(e.target.files);
+    setFormData((prev) => ({ ...prev, photo: filesArray }));
+  };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (validate()) {
-    setIsLoading(true);
-    const formDataToSubmit = new FormData();
+    if (validate()) {
+      setIsLoading(true);
+      const formDataToSubmit = new FormData();
 
-    // Append non-file fields
-    Object.keys(formData).forEach((key) => {
-      if (key !== "photo") {
-        formDataToSubmit.append(key, formData[key]);
-      }
-    });
-
-    // Append each file from the photo array
-    formData.photo.forEach((file) => {
-      formDataToSubmit.append("photo", file);
-    });
-
-    try {
-      const response = await axios.post(
-        `${baseUrl}/api/ground/createGround`,
-        formDataToSubmit,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+      // Append non-file fields
+      Object.keys(formData).forEach((key) => {
+        if (key !== "photo") {
+          formDataToSubmit.append(key, formData[key]);
         }
-      );
-      Swal.fire("Success", "Ground added successfully!", "success");
-
-      // Reset form fields after successful submission
-      setFormData({
-        name: "",
-        location: "",
-        country: "",
-        state: "",
-        city: "",
-        stateDistrict: "",
-        photo: [],
-        description: "",
-        ground_owner: "",
       });
-      setErrors({}); // Clear errors
-    } catch (error) {
-      Swal.fire(
-        "Error",
-        "Failed to add ground. Please check your network connection.",
-        "error"
-      );
-    } finally {
-      setIsLoading(false); // Always reset loading state
+
+      // Append each file from the photo array
+      formData.photo.forEach((file) => {
+        formDataToSubmit.append("photo", file);
+      });
+
+      try {
+        const response = await axios.post(
+          `${baseUrl}/api/ground/createGround`,
+          formDataToSubmit,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        Swal.fire("Success", "Ground added successfully!", "success");
+
+        // Reset form fields after successful submission
+        setFormData({
+          name: "",
+          location: "",
+          country: "",
+          state: "",
+          city: "",
+          stateDistrict: "",
+          photo: [],
+          description: "",
+          ground_owner: "",
+        });
+        setErrors({}); // Clear errors
+      } catch (error) {
+        Swal.fire(
+          "Error",
+          "Failed to add ground. Please check your network connection.",
+          "error"
+        );
+      } finally {
+        setIsLoading(false); // Always reset loading state
+      }
     }
-  }
-};
+  };
 
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-4">Add Ground Details</h2>
-      <form onSubmit={handleSubmit} className="row g-3">
-        {/* Name */}
-        <div className="col-md-6 ">
-          <label htmlFor="name" className="form-label">
-            Ground Name
-          </label>
-          <div className="input-group">
-            <input
-              type="text"
-              className={`form-control ${errors.name ? "is-invalid" : ""}`}
-              id="name"
-              name="name"
-              placeholder="Enter your Ground Name"
-              value={formData.name}
-              onChange={handleInputChange}
-            />
-            <span className="input-group-text"><FaUser /></span>
+    <section>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-lg-5 col-md-12 col-sm-12" style={{ backgroundColor: "#006849" }}>
+            <div className="d-flex justify-content-center">
+              <img
+                src={brandIocn}
+                alt="Brand Icon"
+                style={{ width: "100%", height: "250px", objectFit: "contain" }}
+              />
+            </div>
+            <div className="d-flex align-items-center justify-content-center text-center mt-5">
+              <h2><span className="text-light">Enroll your ground today</span> <span className="spanfont">and</span></h2>
+            </div>
+            <div>
+            <CaptionText/>
+            </div>
+          </div>
+          <div className="col-lg-7  col-md-12 col-sm-12" >
+            <div className="container mt-5">
+              <h2 className="text-center mb-4">Add Ground Details</h2>
+              <form onSubmit={handleSubmit} className="row g-3">
+                {/* Name */}
+                <div className="col-md-6 ">
+                  <label htmlFor="name" className="form-label">
+                    Ground Name
+                  </label>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                      id="name"
+                      name="name"
+                      placeholder="Enter your Ground Name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                    />
+                    <span className="input-group-text"><FaUser /></span>
+                  </div>
+
+                  {errors.name && <div className="invalid-feedback">{errors.name}</div>}
+                </div>
+                <div className="col-md-6">
+                  <label htmlFor="ground_owner" className="form-label">Ground Owner</label>
+                  <input
+                    type="text"
+                    className={`form-control ${errors.ground_owner ? "is-invalid" : ""}`}
+                    id="ground_owner"
+                    name="ground_owner"
+                    placeholder="Enter Owner Name"
+                    value={formData.ground_owner}
+                    onChange={handleInputChange}
+                  />
+                  {errors.ground_owner && <div className="invalid-feedback">{errors.ground_owner}</div>}
+                </div>
+                <div className="col-md-6">
+                  <label htmlFor="city" className="form-label">
+                    City
+                  </label>
+                  <select
+                    className={`form-control ${errors.city ? "is-invalid" : ""}`}
+                    id="city"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleInputChange}
+                  >
+                    <option value="">Select a city</option>
+                    {indianCities.map((city, index) => (
+                      <option key={index} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                  </select>
+
+                  {errors.city && <div className="invalid-feedback">{errors.city}</div>}
+                </div>
+                {/* Photo */}
+                <div className="col-md-6">
+                  <label htmlFor="photo" className="form-label">
+                    Photo
+                  </label>
+                  <input
+                    type="file"
+                    multiple  // Allow multiple file selection
+                    className={`form-control ${errors.photo ? "is-invalid" : ""}`}
+                    id="photo"
+                    name="photo"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
+                  {errors.photo && <div className="invalid-feedback">{errors.photo}</div>}
+                </div>
+
+                {/* Description */}
+                <div className="col-md-12">
+                  <label htmlFor="description" className="form-label">
+                    Description
+                  </label>
+                  <textarea
+                    className={`form-control ${errors.description ? "is-invalid" : ""}`}
+                    id="description"
+                    name="description"
+                    rows="4"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                  ></textarea>
+                  {errors.description && (
+                    <div className="invalid-feedback">{errors.description}</div>
+                  )}
+                </div>
+
+                {/* Location */}
+                <div className="col-md-6">
+                  <label htmlFor="location" className="form-label">
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    className={`form-control ${errors.location ? "is-invalid" : ""}`}
+                    id="location"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                  />
+                  {errors.location && (
+                    <div className="invalid-feedback">{errors.location}</div>
+                  )}
+                </div>
+
+                {/* Country */}
+                <div className="col-md-6">
+                  <label htmlFor="country" className="form-label">
+                    Country
+                  </label>
+                  <input
+                    type="text"
+                    className={`form-control ${errors.country ? "is-invalid" : ""}`}
+                    id="country"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleInputChange}
+                  />
+                  {errors.country && <div className="invalid-feedback">{errors.country}</div>}
+                </div>
+
+                {/* State */}
+                <div className="col-md-6">
+                  <label htmlFor="state" className="form-label">
+                    State
+                  </label>
+                  <input
+                    type="text"
+                    className={`form-control ${errors.state ? "is-invalid" : ""}`}
+                    id="state"
+                    name="state"
+                    value={formData.state}
+                    onChange={handleInputChange}
+                  />
+                  {errors.state && <div className="invalid-feedback">{errors.state}</div>}
+                </div>
+
+
+
+                {/* State District */}
+                <div className="col-md-6">
+                  <label htmlFor="stateDistrict" className="form-label">
+                    State District
+                  </label>
+                  <input
+                    type="text"
+                    className={`form-control ${errors.stateDistrict ? "is-invalid" : ""}`}
+                    id="stateDistrict"
+                    name="stateDistrict"
+                    value={formData.stateDistrict}
+                    onChange={handleInputChange}
+                  />
+                  {errors.stateDistrict && (
+                    <div className="invalid-feedback">{errors.stateDistrict}</div>
+                  )}
+                </div>
+
+                {/* Submit Button */}
+                <div className="col-12 text-center my-5">
+                  <button type="submit" className="btn btn-lg btn-success w-50" disabled={isLoading}>
+                    {isLoading ? "Submitting..." : "Submit"}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
 
-          {errors.name && <div className="invalid-feedback">{errors.name}</div>}
         </div>
-        <div className="col-md-6">
-          <label htmlFor="ground_owner" className="form-label">Ground Owner</label>
-          <input
-            type="text"
-            className={`form-control ${errors.ground_owner ? "is-invalid" : ""}`}
-            id="ground_owner"
-            name="ground_owner"
-            placeholder="Enter Owner Name"
-            value={formData.ground_owner}
-            onChange={handleInputChange}
-          />
-          {errors.ground_owner && <div className="invalid-feedback">{errors.ground_owner}</div>}
-        </div>
-        <div className="col-md-6">
-          <label htmlFor="city" className="form-label">
-            City
-          </label>
-          <select
-            className={`form-control ${errors.city ? "is-invalid" : ""}`}
-            id="city"
-            name="city"
-            value={formData.city}
-            onChange={handleInputChange}
-          >
-            <option value="">Select a city</option>
-            {indianCities.map((city, index) => (
-              <option key={index} value={city}>
-                {city}
-              </option>
-            ))}
-          </select>
+      </div>
+    </section>
 
-          {errors.city && <div className="invalid-feedback">{errors.city}</div>}
-        </div>
-        {/* Photo */}
-        <div className="col-md-6">
-          <label htmlFor="photo" className="form-label">
-            Photo
-          </label>
-          <input
-            type="file"
-            multiple  // Allow multiple file selection
-            className={`form-control ${errors.photo ? "is-invalid" : ""}`}
-            id="photo"
-            name="photo"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          {errors.photo && <div className="invalid-feedback">{errors.photo}</div>}
-        </div>
-
-        {/* Description */}
-        <div className="col-md-12">
-          <label htmlFor="description" className="form-label">
-            Description
-          </label>
-          <textarea
-            className={`form-control ${errors.description ? "is-invalid" : ""}`}
-            id="description"
-            name="description"
-            rows="4"
-            value={formData.description}
-            onChange={handleInputChange}
-          ></textarea>
-          {errors.description && (
-            <div className="invalid-feedback">{errors.description}</div>
-          )}
-        </div>
-
-        {/* Location */}
-        <div className="col-md-6">
-          <label htmlFor="location" className="form-label">
-            Location
-          </label>
-          <input
-            type="text"
-            className={`form-control ${errors.location ? "is-invalid" : ""}`}
-            id="location"
-            name="location"
-            value={formData.location}
-            onChange={handleInputChange}
-          />
-          {errors.location && (
-            <div className="invalid-feedback">{errors.location}</div>
-          )}
-        </div>
-
-        {/* Country */}
-        <div className="col-md-6">
-          <label htmlFor="country" className="form-label">
-            Country
-          </label>
-          <input
-            type="text"
-            className={`form-control ${errors.country ? "is-invalid" : ""}`}
-            id="country"
-            name="country"
-            value={formData.country}
-            onChange={handleInputChange}
-          />
-          {errors.country && <div className="invalid-feedback">{errors.country}</div>}
-        </div>
-
-        {/* State */}
-        <div className="col-md-6">
-          <label htmlFor="state" className="form-label">
-            State
-          </label>
-          <input
-            type="text"
-            className={`form-control ${errors.state ? "is-invalid" : ""}`}
-            id="state"
-            name="state"
-            value={formData.state}
-            onChange={handleInputChange}
-          />
-          {errors.state && <div className="invalid-feedback">{errors.state}</div>}
-        </div>
-
-
-
-        {/* State District */}
-        <div className="col-md-6">
-          <label htmlFor="stateDistrict" className="form-label">
-            State District
-          </label>
-          <input
-            type="text"
-            className={`form-control ${errors.stateDistrict ? "is-invalid" : ""}`}
-            id="stateDistrict"
-            name="stateDistrict"
-            value={formData.stateDistrict}
-            onChange={handleInputChange}
-          />
-          {errors.stateDistrict && (
-            <div className="invalid-feedback">{errors.stateDistrict}</div>
-          )}
-        </div>
-
-        {/* Submit Button */}
-        <div className="col-12 text-center my-5">
-          <button type="submit" className="btn btn-lg btn-primary w-50" disabled={isLoading}>
-            {isLoading ? "Submitting..." : "Submit"}
-          </button>
-        </div>
-      </form>
-    </div>
   );
 };
 

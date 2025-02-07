@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import Swal from 'sweetalert2'; // Import SweetAlert
 import html2canvas from "html2canvas";
 import { useBaseUrl } from '../../Contexts/BaseUrlContext';
 import { useDispatch } from 'react-redux';
 import { deletebooking } from '../../redux/features/cancelbookingSlice';
 import { fetchGroundDetails } from '../../redux/features/groundSlice';
 import { updateprice } from '../../redux/features/updatepriceSlice';
+import { FaSpinner } from "react-icons/fa";
 import { FaUser, FaPhoneAlt, FaRegCalendarAlt, FaRegClock, FaRupeeSign, FaWhatsapp } from "react-icons/fa";
 
 const BookDetailsModal = ({ showModal, handleCloseModal, selectedSlot, selectdate, ground_id }) => {
@@ -121,8 +122,8 @@ const BookDetailsModal = ({ showModal, handleCloseModal, selectedSlot, selectdat
         const deleteResult = await dispatch(deletebooking({ booking_id, ground_id }));
 
         if (deleteResult) {
-          console.log(ground_id, selectdate, 'forcanceldisplay')
-          dispatch(fetchGroundDetails({ ground_id, date: selectdate }));
+        //  console.log(ground_id, selectdate, 'forcanceldisplay')
+         // dispatch(fetchGroundDetails({ ground_id, date: selectdate }));
           cancelbookingHandler();
 
         }
@@ -153,26 +154,31 @@ const BookDetailsModal = ({ showModal, handleCloseModal, selectedSlot, selectdat
       }
 
     }
+   
   };
 
   if (!bookingData) {
     return (
-      <div className="modal fade show" style={{ display: "block" }} tabIndex="-1" aria-labelledby="bookDetailsModalLabel" aria-hidden="true">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="bookDetailsModalLabel">Booking Details</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseModal}></button>
+      // <div className="modal fade show" style={{ display: "block" }} tabIndex="-1" aria-labelledby="bookDetailsModalLabel" aria-hidden="true">
+      //   <div className="modal-dialog">
+      //     <div className="modal-content">
+      //       <div className="modal-header">
+      //         <h5 className="modal-title" id="bookDetailsModalLabel">Booking Details</h5>
+      //         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseModal}></button>
+      //       </div>
+      //       <div className="modal-body">
+      //         <p>{!bookingData ? 'booking may be deleted' : 'please refresh the page'}</p>
+      //       </div>
+      //       <div className="modal-footer">
+      //         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseModal}>Close</button>
+      //       </div>
+      //     </div>
+      //   </div>
+      // </div>
+       <div className="loading-container d-flex justify-content-center align-items-center my-5">
+              <FaSpinner className="spinner-icon" style={{ fontSize: "50px", color: "grey", animation: "spin 1s infinite" }} />
+              <p className="loading-text">Fetching Ground Details...</p>
             </div>
-            <div className="modal-body">
-              <p>{!bookingData ? 'booking may be deleted' : 'please refresh the page'}</p>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseModal}>Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
     );
   }
 
@@ -297,9 +303,6 @@ const BookDetailsModal = ({ showModal, handleCloseModal, selectedSlot, selectdat
       }
     }
   };
-  
-
-
   return (
     <div className="modal fade show custom-backdrop" style={{ display: "block" }} tabIndex="-1" aria-labelledby="bookDetailsModalLabel" aria-hidden="true">
       <div className="modal-dialog modal-dialog-centered">

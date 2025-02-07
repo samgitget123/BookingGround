@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-const baseUrl = `https://bookmyground.onrender.com`; // Update this for production
+import { baseUrl } from "./baseUrlendpoint";
+//const baseUrl = `https://bookmyground.onrender.com`; // Update this for production
 //https://bookingapp-r0fo.onrender.com
 //http://localhost:5000
 // Async thunk to fetch grounds data

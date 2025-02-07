@@ -1,8 +1,8 @@
 // src/redux/groundSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
-const baseUrl = `https://bookmyground.onrender.com`; // Update this for production
+import { baseUrl } from './baseUrlendpoint';
+//const baseUrl = `https://bookmyground.onrender.com`; // Update this for production
 //https://bookingapp-r0fo.onrender.com
 //http://localhost:5000
 const initialState = {
