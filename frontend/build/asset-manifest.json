@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.3ded9512.css",
-    "main.js": "/static/js/main.ee296255.js",
+    "main.js": "/static/js/main.f907666b.js",
     "static/js/453.d855a71b.chunk.js": "/static/js/453.d855a71b.chunk.js",
     "static/media/cricgrass.jpg": "/static/media/cricgrass.17db042f29abf8531509.jpg",
     "static/media/sportpack.png": "/static/media/sportpack.0012aa7b60b13d70ab58.png",
@@ -23,11 +23,11 @@
     "static/media/fa-v4compatibility.woff2": "/static/media/fa-v4compatibility.c3ea317a0f10f201597f.woff2",
     "index.html": "/index.html",
     "main.3ded9512.css.map": "/static/css/main.3ded9512.css.map",
-    "main.ee296255.js.map": "/static/js/main.ee296255.js.map",
+    "main.f907666b.js.map": "/static/js/main.f907666b.js.map",
     "453.d855a71b.chunk.js.map": "/static/js/453.d855a71b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.3ded9512.css",
-    "static/js/main.ee296255.js"
+    "static/js/main.f907666b.js"
   ]
 }

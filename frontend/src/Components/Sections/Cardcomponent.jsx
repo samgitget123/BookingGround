@@ -25,7 +25,7 @@ const CardComponent = ({ grounds, grounddata }) => {
 
     // Construct the URL for fetching grounds
     const url = `${baseUrl}/api/ground?state=${state}&city=${city}&location=${location}`;
-
+console.log(url , 'getgrounds')
     const fetchGrounds = async () => {
       try {
         const response = await axios.get(url);
