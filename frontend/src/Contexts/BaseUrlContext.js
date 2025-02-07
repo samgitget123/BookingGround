@@ -10,7 +10,7 @@ export const useBaseUrl = () => useContext(BaseUrlContext);
 export const BaseUrlProvider = ({ children }) => {
   // State to manage the base URL
   const [baseUrl, setBaseUrl] = useState(
-    "https://bookingapp-r0fo.onrender.com"
+    "https://bookmyground.onrender.com"
   );
 //http://localhost:5000
 //https://bookingapp-r0fo.onrender.com

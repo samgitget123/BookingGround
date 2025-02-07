@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 
-const baseUrl = `https://bookingapp-r0fo.onrender.com`; // Update this for production
+const baseUrl = `https://bookmyground.onrender.com`; // Update this for production
 //https://bookingapp-r0fo.onrender.com
 //http://localhost:5000
 export const updateprice = createAsyncThunk(
