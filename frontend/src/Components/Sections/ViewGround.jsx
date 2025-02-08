@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import UserGrounds from "./UserGrounds";
 import { useParams } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -119,7 +120,9 @@ const ViewGround = () => {
                   className="form-control"
                 />
               </div>
-
+                  <div>
+                    <UserGrounds/>
+                  </div>
             </div>
           </div>
           <div>
@@ -140,7 +143,7 @@ const ViewGround = () => {
           <div className="col-lg-9 col-sm-12 col-md-12">
             <div
               className="d-flex  justify-content-evenly justify-content-md-start flex-wrap mb-3" style={{ backgroundColor: "#006849" }}
-            >
+              >
               <div>
                 <h6 className="teritoryFont text-light text-center mt-3">
                   Available Slots:

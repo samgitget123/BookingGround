@@ -4,6 +4,7 @@ import Home from './Components/Sections/Home';
 import ViewGround from './Components/Sections/ViewGround';
 import Payment from './Components/Sections/Payment';
 import CreateGroundForm from './Components/Sections/CreategroundForm';
+import WelcomeHome from './Components/Sections/Home/WelcomeHome';
 //login
 import RegisterForm from './Adminportal/RegisterForm';
 import LoginForm from './Adminportal/LoginForm';
@@ -32,7 +33,8 @@ const App = () => {
             <Routes>
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<RegisterForm />} />
-              <Route path="/" element={<Home />} />
+            <Route path="/" element={<WelcomeHome />} />
+              {/* <Route path="/" element={<Home />} /> */}
               <Route path="/createground" element={<CreateGroundForm />} exact />
               <Route path="/viewground/:gid" element={<ViewGround />} />
               <Route path="/payment/:gid" element={<Payment />} />

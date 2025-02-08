@@ -2,6 +2,10 @@ import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema(
   {
+    user_id: {
+      type: String,  // Change this from ObjectId to String to accept UUIDs
+      required: true,
+    },
     name: {
       type: String,
       required: [true, 'Please add a name'],

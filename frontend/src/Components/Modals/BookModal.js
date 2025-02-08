@@ -28,6 +28,8 @@ const BookModal = ({
   const dispatch = useDispatch();
   const remainingAmount = price - prepaid;
   const handleBooking = async (gid, selectedSlots, selectdate) => {
+    const user_id = localStorage.getItem("user_id");
+   
     const result = await Swal.fire({
       title: "Confirm Booking",
       text: "Are you sure you want to book these slots?",
@@ -39,7 +41,12 @@ const BookModal = ({
     });
 
     if (!result.isConfirmed) return; // Stop if the user cancels
+    if (!user_id) {
+      alert("User not logged in");
+      return;
+    }
     const bookingData = {
+      user_id, 
       ground_id: gid,
       date: selectdate,
       slots: selectedSlots,

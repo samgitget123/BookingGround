@@ -9,6 +9,8 @@ import CaptionText from "./animations/CaptionText";
 
 const CreateGroundForm = () => {
   const { baseUrl } = useBaseUrl();
+  console.log(baseUrl, 'baseurl')
+  
   const [formData, setFormData] = useState({
     name: "",
     location: "",
@@ -19,10 +21,12 @@ const CreateGroundForm = () => {
     photo: [],
     description: "",
     ground_owner: "",
+    user_id: ""
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [locationLoaded, setLocationLoaded] = useState(false);
+
   // Function to get the user's geolocation and fetch the details
   const getUserLocation = () => {
     if (navigator.geolocation) {
@@ -92,62 +96,283 @@ const CreateGroundForm = () => {
     const filesArray = Array.from(e.target.files);
     setFormData((prev) => ({ ...prev, photo: filesArray }));
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (validate()) {
-      setIsLoading(true);
-      const formDataToSubmit = new FormData();
-
-      // Append non-file fields
-      Object.keys(formData).forEach((key) => {
-        if (key !== "photo") {
-          formDataToSubmit.append(key, formData[key]);
-        }
-      });
-
-      // Append each file from the photo array
-      formData.photo.forEach((file) => {
-        formDataToSubmit.append("photo", file);
-      });
-
-      try {
-        const response = await axios.post(
-          `${baseUrl}/api/ground/createGround`,
-          formDataToSubmit,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        Swal.fire("Success", "Ground added successfully!", "success");
-
-        // Reset form fields after successful submission
-        setFormData({
-          name: "",
-          location: "",
-          country: "",
-          state: "",
-          city: "",
-          stateDistrict: "",
-          photo: [],
-          description: "",
-          ground_owner: "",
-        });
-        setErrors({}); // Clear errors
-      } catch (error) {
-        Swal.fire(
-          "Error",
-          "Failed to add ground. Please check your network connection.",
-          "error"
-        );
-      } finally {
-        setIsLoading(false); // Always reset loading state
-      }
+  useEffect(() => {
+    const user_id = localStorage.getItem("user_id");
+    if (user_id) {
+      setFormData((prevData) => ({
+        ...prevData,
+        user_id: user_id,
+      }));
     }
-  };
+  }, []);
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const user_id = localStorage.getItem("user_id");
+  //   console.log(user_id, "user_id from localStorage");
+  //   if (!user_id) {
+  //     alert("User not logged in!");
+  //     return;
+  //   }
+
+  //   if (validate()) {
+  //     setIsLoading(true);
+  //     const formDataToSubmit = new FormData();
+
+  //     // Append non-file fields
+  //     Object.keys(formData).forEach((key) => {
+  //       if (key !== "photo") {
+  //         formDataToSubmit.append(key, formData[key]);
+  //       }
+  //     });
+  //     formDataToSubmit.append("user_id", user_id); // Add user_id directly to the form data
+  //     // Append each file from the photo array
+  //     formData.photo.forEach((file) => {
+  //       formDataToSubmit.append("photo", file);
+  //     });
+
+  //     try {
+  //       const response = await axios.post(
+  //         `${baseUrl}/api/ground/createGround`,
+  //         formDataToSubmit,
+  //         {
+  //           headers: {
+  //             "Content-Type": "multipart/form-data",
+  //           },
+  //         }
+  //       );
+  //       console.log(response, "Create Ground Response");
+  //       Swal.fire("Success", "Ground added successfully!", "success");
+
+  //       // Reset form fields after successful submission
+  //       setFormData({
+  //         name: "",
+  //         location: "",
+  //         country: "",
+  //         state: "",
+  //         city: "",
+  //         stateDistrict: "",
+  //         photo: [],
+  //         description: "",
+  //         ground_owner: "",
+  //       });
+  //       setErrors({}); // Clear errors
+  //     } catch (error) {
+  //       Swal.fire(
+  //         "Error",
+  //         "Failed to add ground. Please check your network connection.",
+  //         "error"
+  //       );
+  //     } finally {
+  //       setIsLoading(false); // Always reset loading state
+  //     }
+  //   }
+  // };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  
+  //    const { user_id } = formData;
+  //   if (!user_id) {
+  //     alert("User not logged in!");
+  //     return;
+  //   }
+  
+  //   // Only add the user_id if it exists and is not an empty string
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     user_id: user_id, // Add user_id directly here
+  //   }));
+  
+  //   if (validate()) {
+  //     setIsLoading(true);
+  //     const formDataToSubmit = new FormData();
+  
+  //     // Append all form fields
+  //     Object.keys(formData).forEach((key) => {
+  //       if (key !== "photo") {
+  //         formDataToSubmit.append(key, formData[key]);
+  //       }
+  //     });
+  
+  //     // Check if form data is correct before sending
+  //     for (let pair of formDataToSubmit.entries()) {
+  //       console.log(pair[0], pair[1]);
+  //     }
+  
+  //     // Append each file in photo
+  //     formData.photo.forEach((file) => {
+  //       formDataToSubmit.append("photo", file);
+  //     });
+  
+  //     try {
+  //       const response = await axios.post(
+  //         `${baseUrl}/api/ground/createGround`,
+  //         formDataToSubmit,
+  //         {
+  //           headers: {
+  //             "Content-Type": "multipart/form-data",
+  //           },
+  //         }
+  //       );
+  //       console.log(response, "Create Ground Response");
+  //       Swal.fire("Success", "Ground added successfully!", "success");
+  //       // Reset form
+  //       setFormData({
+  //         name: "",
+  //         location: "",
+  //         country: "",
+  //         state: "",
+  //         city: "",
+  //         stateDistrict: "",
+  //         photo: [],
+  //         description: "",
+  //         ground_owner: "",
+  //         user_id: "", // Reset user_id as well
+  //       });
+  //       setErrors({});
+  //     } catch (error) {
+  //       console.error(error.response);
+  //       Swal.fire("Error", error.response.data.message || "Failed to add ground", "error");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   }
+  // };
+//   const handleSubmit = async (e) => {
+//   e.preventDefault();
+
+//   // Get user_id from local storage
+//   const user_id = localStorage.getItem("user_id");
+  
+//   if (!user_id) {
+//     alert("User not logged in!");
+//     return;
+//   }
+
+//   // Add user_id to form data before submitting
+//   setFormData((prevData) => ({
+//     ...prevData,
+//     user_id: user_id, // Ensure user_id is included
+//   }));
+
+//   if (validate()) {
+//     setIsLoading(true);
+//     const formDataToSubmit = new FormData();
+
+//     // Append all form fields
+//     Object.keys(formData).forEach((key) => {
+//       if (key !== "photo") {
+//         formDataToSubmit.append(key, formData[key]);
+//       }
+//     });
+
+//     // Append each file in photo array
+//     formData.photo.forEach((file) => {
+//       formDataToSubmit.append("photo", file);
+//     });
+
+//     try {
+//       const response = await axios.post(
+//         `${baseUrl}/api/ground/createGround`,
+//         formDataToSubmit,
+//         {
+//           headers: {
+//             "Content-Type": "multipart/form-data",
+//           },
+//         }
+//       );
+//       console.log(response, "Create Ground Response");
+//       Swal.fire("Success", "Ground added successfully!", "success");
+
+//       // Reset form
+//       setFormData({
+//         name: "",
+//         location: "",
+//         country: "",
+//         state: "",
+//         city: "",
+//         stateDistrict: "",
+//         photo: [],
+//         description: "",
+//         ground_owner: "",
+//         user_id: "", // Reset user_id
+//       });
+//       setErrors({});
+//     } catch (error) {
+//       console.error(error.response);
+//       Swal.fire("Error", error.response.data.message || "Failed to add ground", "error");
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   }
+// };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Get user_id from local storage
+  const user_id = localStorage.getItem("user_id");
+
+  if (!user_id) {
+    Swal.fire("Error", "User not logged in!", "error");
+    return;
+  }
+
+  if (validate()) {
+    setIsLoading(true);
+    const formDataToSubmit = new FormData();
+
+    // Append all form fields except "photo"
+    Object.keys(formData).forEach((key) => {
+      if (key !== "photo") {
+        formDataToSubmit.append(key, formData[key]);
+      }
+    });
+
+    // Append user_id manually
+    formDataToSubmit.append("user_id", user_id);
+
+    // Append each file in the "photo" array
+    formData.photo.forEach((file) => {
+      formDataToSubmit.append("photo", file);
+    });
+
+    try {
+      const response = await axios.post(
+        `${baseUrl}/api/ground/createGround`,
+        formDataToSubmit,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log(response, "Create Ground Response");
+      Swal.fire("Success", "Ground added successfully!", "success");
+
+      // Reset form fields after submission
+      setFormData({
+        name: "",
+        location: "",
+        country: "",
+        state: "",
+        city: "",
+        stateDistrict: "",
+        photo: [],
+        description: "",
+        ground_owner: "",
+        user_id: "", // Reset user_id field
+      });
+
+      setErrors({});
+    } catch (error) {
+      console.error(error.response);
+      Swal.fire("Error", error.response?.data?.message || "Failed to add ground", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+};
 
 
   return (

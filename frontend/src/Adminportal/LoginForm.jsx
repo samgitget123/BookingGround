@@ -25,10 +25,11 @@ const LoginForm = () => {
         phone_number: phone,
         password: password,
       });
-
+      console.log(response.data?.user?.id , 'loginresponse');
       console.log('Login successful:', response);
       localStorage.setItem('token', response.data.token);
-      navigate('/admindashboard');
+      localStorage.setItem('user_id', response.data.user.id);
+     navigate('/');
     } catch (err) {
       console.error('Login error:', err.response ? err.response.data : err.message);
       setError(err.response?.data?.message || 'Login failed');

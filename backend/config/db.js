@@ -13,7 +13,11 @@ const connectDB = async () => {
             console.error('MongoDB URL is not defined in .env file.');
             process.exit(1); // Exit if the URL is not defined
         }
-        await mongoose.connect(process.env.MONGO_URL);
+        await mongoose.connect(process.env.MONGO_URL, {
+            useNewUrlParser: true,
+  useUnifiedTopology: true,
+            serverSelectionTimeoutMS: 5000, 
+        });
         console.log('MongoDB connected..now....');
     } catch (error) {
         console.error('MongoDB connection error:', error);

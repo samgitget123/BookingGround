@@ -5,8 +5,10 @@ import Ground from "../models/Ground.js";
 import generateBookingID from "../Utils.js";
 
 const bookingGround = asyncHandler(async (req, res) => {
-  const { ground_id, date, slots, comboPack, name, mobile, email, price, prepaid } = req.body;
-
+  const {user_id, ground_id, date, slots, comboPack, name, mobile, email, price, prepaid } = req.body;
+  if (!user_id || typeof user_id !== "string") {
+    return res.status(400).json({ message: "User ID must be a valid string" });
+  }
   if (!price || price <= 0) {
     return res.status(400).json({ message: "Invalid total price provided" });
   }
@@ -65,6 +67,7 @@ const bookingGround = asyncHandler(async (req, res) => {
 
   // Create the booking entry
   const booking = new Booking({
+    user_id,
     ground_id,
     date,
     slots,
@@ -82,7 +85,7 @@ const bookingGround = asyncHandler(async (req, res) => {
   // Return the success response
   res.status(201).json({
     success: true,
-    data: { ground_id, date, slots, comboPack, price: price, prepaid,  booking_id, name, mobile, email },
+    data: { user_id,ground_id, date, slots, comboPack, price: price, prepaid,  booking_id, name, mobile, email },
     message: "Slot booked successfully",
   });
 });
