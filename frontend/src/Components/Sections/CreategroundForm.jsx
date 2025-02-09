@@ -384,10 +384,10 @@ const handleSubmit = async (e) => {
               <img
                 src={brandIocn}
                 alt="Brand Icon"
-                style={{ width: "100%", height: "250px", objectFit: "contain" }}
+                style={{ width: "100%", height: "200px", objectFit: "contain" }}
               />
             </div>
-            <div className="d-flex align-items-center justify-content-center text-center mt-5">
+            <div className="d-flex align-items-center justify-content-center text-center mt-3">
               <h2><span className="text-light">Enroll your ground today</span> <span className="spanfont">and</span></h2>
             </div>
             <div>

@@ -10,7 +10,7 @@ import { Button } from "react-bootstrap";
 const WelcomeHome = () => {
   const userLocation = useSelector((state) => state.userLocation.userLocation);
   const [selectCity, setSelectCity] = useState('');
-  console.log(userLocation, selectCity, 'useradrress')
+  const user_name = localStorage.getItem("name");
   // Handle city selection change
   const handleCityChange = (e) => {
     const selectedCity = e.target.value;
@@ -33,38 +33,41 @@ const WelcomeHome = () => {
             >
               <div className="d-flex align-items-center justify-content-center text-center">
                 <div className=" mt-md-2">
-                  <div className=" d-none d-sm-block mb-sm-5">
+                  <div className="  mb-sm-5">
                     <img
                       className="img-fluid brandlogosize" //rotateImage
                       src={brandlogo}
                       alt="logo"
                     />
                   </div>
-                  <TypingText />
-
-                 
-
-                  {/* Get Location Button */}
-                  <div>
-                    <Getlocations />
-                  </div>
-
-
                   <div>
                     <h4 className="webheading">
-                      Find Grounds{" "}
-                      <span className="webheading2">@ Your Nearest</span>
+                      Hello{" "}
+                      <span className="webheading2">{user_name}</span>
                     </h4>
                   </div>
+                  <TypingText />
+
+
+
+                  {/* Get Location Button */}
+                  {/* <div>
+                    <Getlocations />
+                  </div> */}
+
+
+                 
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
+      {/* Card components */}
       <section className="px-3">
         <HomeCard grounddata={{ selectCity, userLocation }} />
       </section>
+
     </>
   );
 };

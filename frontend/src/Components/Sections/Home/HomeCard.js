@@ -1,214 +1,126 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import SearchBar from "../requires/SearchBar";
-//import SearchBar from "./requires/SearchBar";
 import { useBaseUrl } from "../../../Contexts/BaseUrlContext";
-//import { useBaseUrl } from "../../Contexts/BaseUrlContext";
 import { FaSpinner } from "react-icons/fa";
 import axios from "axios";
-import { Button } from "react-bootstrap";
 
-const HomeCard = ({ grounds, grounddata }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [cardsPerPage, setCardsPerPage] = useState(8);
+const HomeCard = () => {
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  // fullData will store the complete API response
-  const [fullData, setFullData] = useState([]);
-  // filteredData will be used for rendering (and updating based on search)
-  const [filteredData, setFilteredData] = useState([]);
-
   const { baseUrl } = useBaseUrl();
   const navigate = useNavigate();
 
-  // Fetch ground details
+  // Retrieve user_id from localStorage
+  const user_id = localStorage.getItem("user_id");
+
   useEffect(() => {
-    const state = grounddata.userLocation.state; // Default to Telangana if not provided
-    const city = grounddata.selectCity;
-    const location = ""; // Use dynamic location if available
-
-    // Construct the URL for fetching grounds
-    const url = `${baseUrl}/api/ground?state=${state}&city=${city}&location=${location}`;
-    console.log(url, 'getgrounds')
-    const fetchGrounds = async () => {
-      try {
-        const response = await axios.get(url);
-        // Store the full response in fullData
-        setFullData(response.data);
-        // Also initialize filteredData with the full data
-        setFilteredData(response.data);
-      } catch (error) {
-        console.error(
-          "Error fetching grounds:",
-          error.response ? error.response.data : error.message
-        );
-      }
-    };
-
-    fetchGrounds();
-  }, [grounddata, baseUrl]);
-
-  // Handle cards per page based on screen size
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.matchMedia("(max-width: 768px)").matches) {
-        setCardsPerPage(4);
-      } else if (
-        window.matchMedia("(min-width: 769px) and (max-width: 1028px)").matches
-      ) {
-        setCardsPerPage(8);
-      } else {
-        setCardsPerPage(12);
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Simulate a loading delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
+    if (!user_id) {
+      console.error("User ID not found in localStorage");
       setLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const totalPages = Math.ceil(filteredData.length / cardsPerPage);
-  const indexOfLastCard = currentPage * cardsPerPage;
-  const indexOfFirstCard = indexOfLastCard - cardsPerPage;
-  const currentCards = filteredData.slice(indexOfFirstCard, indexOfLastCard);
-
-  // Handle search bar filtering
-  // We use fullData as the source for filtering
-  const handleSearch = (results) => {
-    setFilteredData(results);
-    setCurrentPage(1);
-  };
-
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+      return;
     }
-  };
 
-  const handlePrev = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+    const url = `${baseUrl}/api/ground/user/grounds?userId=${user_id}`;
+
+    console.log(url, "getgrounds");
+
+    axios
+      .get(url)
+      .then((response) => {
+        setData(response.data); // Response is an array
+      })
+      .catch((error) => {
+        console.error("Error fetching grounds:", error.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [baseUrl, user_id]);
 
   const handleCardClick = (gid) => {
     navigate(`/viewground/${gid}`, { state: gid });
   };
 
+  // Get today's date in 'YYYY-MM-DD' format
+  const getTodayDate = () => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0
+    const year = today.getFullYear();
+    return `${year}-${month}-${day}`;
+  };
+
+  const todayDate = getTodayDate();
+
   return (
     <div className="my-3">
-      {/* <div>
-        <SearchBar data={fullData} onSearch={handleSearch} />
-      </div> */}
       {loading ? (
         <div className="d-flex justify-content-center align-items-center my-5">
-          <FaSpinner
-            className="spinner-icon"
-            style={{
-              fontSize: "50px",
-              color: "grey",
-              animation: "spin 1s infinite",
-            }}
-          />
+          <FaSpinner className="spinner-icon" style={{ fontSize: "50px", color: "grey", animation: "spin 1s infinite" }} />
           <span className="ms-2">Loading...</span>
         </div>
       ) : (
-        <div className="row g-2">
-          {currentCards && currentCards.length > 0 ? (
-            currentCards.map((playground, index) => (
-              <div
-                className="col-lg-3 col-md-6 col-sm-12"
-                key={index}
-                onClick={() => handleCardClick(playground.ground_id)}
-              >
-                <div className="card shadow-lg border-0 rounded" style={{ width: "100%" }}>
-                  <div
-                    className="card-img-top"
-                    style={{
-                      height: "200px",
-                      backgroundColor: "#f0f0f0",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {Array.isArray(playground.data.photo) && playground.data.photo.length > 0 ? (
-                      <img
-                        src={`${baseUrl}/uploads/${playground.data.photo[0]}`}
-                        alt={playground.data.name}
-                        className="img-fluid"
-                        style={{
-                          height: "100%",
-                          width: "100%",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : playground.data.photo ? (
-                      <img
-                        src={`${baseUrl}/uploads/${playground.data.photo}`}
-                        alt={playground.data.name}
-                        className="img-fluid"
-                        style={{
-                          height: "100%",
-                          width: "100%",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : (
-                      <span>No Image Available</span>
-                    )}
-                  </div>
+        <div className="container">
+          <div className="row g-3">
+            {data.length > 0 ? (
+              data.map((playground) => {
+                // Check if today's date exists in slots and fetch bookedSlots for that date
+                // const slotsForToday = playground.slots[todayDate];
+                const slotsForToday = playground.slots ? playground.slots[todayDate] : null;
+                return (
+                  <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={playground.ground_id} onClick={() => handleCardClick(playground.ground_id)}>
+                    <div className="card shadow-lg border-0 rounded h-100">
+                      <div className="card-img-top d-flex align-items-center justify-content-center" style={{ height: "200px", backgroundColor: "#f0f0f0" }}>
+                        {playground.photo && playground.photo.length > 0 ? (
+                          <img
+                            src={`${baseUrl}/uploads/${playground.photo[0]}`}
+                            alt={playground.name}
+                            className="img-fluid"
+                            style={{ height: "100%", width: "100%", objectFit: "cover" }}
+                          />
+                        ) : (
+                          <span>No Image Available</span>
+                        )}
+                      </div>
 
-                  <div className="card-body secondaryColor">
-                    <h4 className="card-title teritoryFont cardheadfont">
-                      <i className="fa-thin fa-cricket-bat-ball"></i>{" "}
-                      {playground.data.name}
-                    </h4>
-                    <p className="card-text teritoryFont">
-                      <i className="fas fa-map-marker-alt" style={{ color: "#00EE64" }}></i>{" "}
-                      {playground.data.location}
-                    </p>
-                    <a href="#" class="btn btn-success">Book Your Slots</a>
+                      <div className="card-body secondaryColor d-flex flex-column">
+                        <div className="d-flex justify-content-between">
+                          <div> 
+                            <h5 className="card-title teritoryFont cardheadfont">{playground.name}</h5>
+                          </div>
+                          <div>
+                            <p className="card-text teritoryFont">
+                            <i className="fas fa-map-marker-alt" style={{ color: "#00EE64" }}></i> {playground.location}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Displaying the number of booked slots for today's date */}
+                        {slotsForToday && slotsForToday.bookedSlots.length > 0 ? (
+
+                          <p className="card-text teritoryFont m-0">Booked Slots: <span>{slotsForToday.bookedSlots.length}</span></p>
+
+                        ) : (
+                          <p className="text-muted text-light m-0">No bookings yet for today.</p>
+                        )}
+
+                        <button className="btn btn-success mt-2">Book Your Slots</button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-           
+                );
+              })
+            ) : (
+              <div className="col-12 text-center fw-bold text-secondary">
+                <p>No Registered Grounds. Please Register Your Ground.</p>
+                <button className="btn btn-md btn-success" onClick={() => navigate("/createground")}>
+                  Register
+                </button>
               </div>
-            ))
-          ) : (
-            <div className="col-12">
-              <p className="text-center fw-bold text-secondary">
-                No Registered Ground please Register Your Ground
-              </p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
-      {/* 
-      <div className="row justify-content-center mt-4">
-        <div className="col-md-6 d-flex justify-content-between">
-          <button
-            className="btn btn-sm secondaryColor teritoryFont"
-            onClick={handlePrev}
-            disabled={currentPage === 1}
-          >
-            <i className="fa-solid fa-chevron-left"></i>
-          </button>
-          <button
-            className="btn btn-sm secondaryColor teritoryFont"
-            onClick={handleNext}
-            disabled={currentPage === totalPages}
-          >
-            <i className="fa-solid fa-chevron-right"></i>
-          </button>
-        </div>
-      </div> */}
     </div>
   );
 };

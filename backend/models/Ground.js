@@ -45,8 +45,8 @@ const groundSchema = new mongoose.Schema(
       default: Date.now,
     },
     slots: {
-      type: Map,
-      of: { bookedSlots: [String], default: [] },
+      type: Object, // Changed from Map to Object
+      default: {}, // Default empty object
     },
     ground_owner: {
       type: String,
